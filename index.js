@@ -15,11 +15,27 @@ const supabaseUrl = process.env.SUPABASE_URL;
 const supabaseKey = process.env.SUPABASE_KEY;
 const supabase = supabaseClient.createClient(supabaseUrl, supabaseKey);
 
-app.get('/rareBirdAlert', (req, res) => {
+// get rare bird alert page
+app.get('/', (req, res) => {
     res.sendFile('public/rareBirdAlert.html', {root: __dirname});
 });
 
-app.post('/rareBirdAlert', async (req, res) => {
+// get rare bird alerts
+app.get('/alerts', async (req, res) => {
+    const {data, error} = await supabase.from('alerts').select();
+
+    if (error) {
+        console.log(`Error ${error}`);
+        res.statusCode = 500;
+        res.send(error);
+        return;
+    } else {
+        res.send(data);
+    }
+});
+
+// post rare bird alerts
+app.post('/alerts', async (req, res) => {
     console.log('Add alert request');
     console.log('Request:', req.body);
 
@@ -43,11 +59,6 @@ app.post('/rareBirdAlert', async (req, res) => {
         res.send(data);
     }
     res.send(req.body);
-});
-
-
-app.get('/rareBirdData', (req, res) => {
-    res.sendFile('public/rareBirdData.html', {root: __dirname});
 });
 
 app.get('/manageAlerts', (req, res) => {

@@ -1,3 +1,6 @@
+document.getElementById('countyCheckboxes').style.visibility = 'hidden';
+document.getElementById('dataTable').style.visibility = 'hidden';
+
 // create headers & request options for eBird api fetch
 let myHeaders = new Headers();
 let ebirdapitoken;
@@ -5,26 +8,6 @@ let requestOptions = {};
 requestOptions.method = 'GET';
 requestOptions.redirect = 'follow';
 myHeaders.append("X-eBirdApiToken", '');
-
-// valid user key input
-async function validateKey() {
-    // get key input and place in header
-    ebirdapitoken = document.getElementById('apiKey').value;
-    myHeaders.set("X-eBirdApiToken", ebirdapitoken);
-    requestOptions.headers = myHeaders;
-
-    try {
-        const testFetch = await loadCounties();
-    } catch (error) {
-        alert('Please enter a valid key');
-        document.getElementById('keyValidationStatus').innerHTML = 'Key rejected';
-        document.getElementById('keyValidationStatus').style.color = 'rgba(211, 0, 0, 1)';
-        return false;
-    }
-    document.getElementById('apiKey').style.color = 'rgba(0, 134, 20, 1)';
-    document.getElementById('keyValidationStatus').innerHTML = 'Key accepted';
-    document.getElementById('keyValidationStatus').style.color = 'rgba(0, 211, 32, 1)';
-}
 
 // hide data page's county checkboxes when click off 
 window.addEventListener('click', function(click){
@@ -53,14 +36,6 @@ function hide(elements) {
     for (let e=0; e<elements.length; e++) {
         document.getElementById(elements[e]).style.visibility = 'hidden';
     }
-}
-
-function validateInput(userInput) {
-    var validation_regex = /[\d!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/;
-    if (validation_regex.test(userInput)) {
-        alert("Please enter characters A-Z");
-        return 'alert';
-    };
 }
 
 // grab div for county checkbox search results
@@ -99,7 +74,7 @@ async function populateCountySearch() {
 
     // validate user input
     const validation = validateInput(countyInput);
-    if (validation == 'alert') {
+    if (validation) {
         return false;
     }
   
@@ -270,11 +245,11 @@ async function populateTable() {
                 }
                 // add new record if no match
                 if (match == false) {
-                    tableBody.appendChild(newRow);
                     // append columns to new row
                     for (let col=0; col<7; col++) {
                         newRow.appendChild(columns[col]);
                     }
+                    tableBody.appendChild(newRow);
                 }
 
                 // data summary calculation
@@ -309,6 +284,3 @@ async function populateTable() {
         dataSummary.appendChild(numOfSpecies);
     }
 }
-
-// hide all search results on load
-window.addEventListener('load', hide(['countyCheckboxes', 'dataTable']));

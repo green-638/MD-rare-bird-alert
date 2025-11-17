@@ -2,6 +2,9 @@
   <head>
     <title>Manage alerts</title>
     <link rel="stylesheet" href="styling.css" />
+    <script src="validation.js" defer></script>
+    <script src="rareBirdData.js" defer></script>
+    <script src="manageAlerts.js" defer></script>
   </head>
   <body>
     <div class="nameAndNav">
@@ -16,5 +19,20 @@
         </ul>
       </nav>
     </div>
+    <div id="searchAlertsSection">
+      <h1 id="manageAlertsTitle">Manage alerts</h1>
+      <form id="searchAlerts" onsubmit="return searchAlerts()">
+        <label for="email">Email:</label>
+        <input type="text" name="email" id="email" required />
+        <button type="submit">Submit</button>
+      </form>
+    </div>
+    <table id="manageAlertsTable">
+      <tr>
+        <th id="emailCol">Email</th>
+        <th id="locationCol">Location</th>
+        <th id="intervalCol">Interval</th>
+      </tr>
+    </table>
   </body>
 </html>
