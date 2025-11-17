@@ -15,11 +15,11 @@ const supabaseUrl = process.env.SUPABASE_URL;
 const supabaseKey = process.env.SUPABASE_KEY;
 const supabase = supabaseClient.createClient(supabaseUrl, supabaseKey);
 
-app.get('/homepage', (req, res) => {
-    res.sendFile('public/homepage.html', {root: __dirname});
+app.get('/rareBirdAlert', (req, res) => {
+    res.sendFile('public/rareBirdAlert.html', {root: __dirname});
 });
 
-app.post('/homepage', async (req, res) => {
+app.post('/rareBirdAlert', async (req, res) => {
     console.log('Add alert request');
     console.log('Request:', req.body);
 
