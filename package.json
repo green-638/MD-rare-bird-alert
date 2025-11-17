@@ -1,0 +1,28 @@
+{
+  "name": "md-rare-bird-alert",
+  "version": "1.0.0",
+  "description": "Receive customer alerts about rare birds in MD through email",
+  "homepage": "https://github.com/green-638/MD-rare-bird-alert#readme",
+  "bugs": {
+    "url": "https://github.com/green-638/MD-rare-bird-alert/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/green-638/MD-rare-bird-alert.git"
+  },
+  "license": "ISC",
+  "author": "Connor Hall",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon -e '*'",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.81.1",
+    "body-parser": "^2.2.0",
+    "dotenv": "^17.2.3",
+    "express": "^5.1.0",
+    "nodemon": "^3.1.11"
+  }
+}

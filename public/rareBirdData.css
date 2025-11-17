@@ -1,0 +1,145 @@
+#dataSearchSection {
+    /* center form */
+    width: 80%;
+    margin: 0 auto;
+    margin-top: 100px;
+    text-align: center;
+}
+
+.dataSearchElement {
+    /* spacing between elements on top line */
+    margin-right: 15px;
+}
+
+#apiHelpDataPage {
+    margin-left: 200px;
+    font-size: 12;
+}
+
+#keyValidationStatus {
+    position: absolute;
+    display: inline-block;
+    width: 100px;
+    margin-top: 3px;
+}
+
+#dataSearchTitle {
+    margin-left: 0;
+    text-align: center;
+    font-size: 18px;
+}
+
+#countyCheckboxes {
+    width: 170px;
+    margin-left: 500px;
+    margin-top: -70px;
+    padding: 10px;
+    position: absolute;
+    z-index: 1;
+    background-color: rgb(255, 255, 255);
+    border-radius: 15px;
+    
+    label {
+        display: block;
+        margin-left: 30px;
+        margin-bottom: 25px;
+        margin-top: -25px;
+        color: black;
+    }
+
+    input {
+        margin-bottom: 10px;
+    }
+}
+
+#timeInput {
+    margin-left: 288px;
+    margin-top: 10px;
+}
+
+#startTime, #endTime, #startDate, #endDate{
+    width: 120px;
+}
+
+.endTimeSection {
+    margin-right: 20px;
+}
+
+#submitButton {
+    margin-top: 20px;
+    padding: 5px;
+}
+/* end data form */
+
+/* data table */
+#dataTableSection {
+    position: relative;
+    
+    #dataTable {
+        width: 80%;
+        margin-top: 30px;
+        margin-bottom: 100px;
+        margin-left: 300px;
+        padding: 12px;
+        border: 1px solid black;
+        border-radius: 15px;
+        background-color: rgb(230, 230, 230);
+    }
+
+    thead {
+        text-align: left;
+    }
+
+    td {
+        word-wrap: break-word;
+        padding-bottom: 20px;
+        
+    }
+    
+    tr {
+        color: rgb(67, 67, 67);
+    }
+    
+    #species {
+        width: 20%;
+    }
+
+    #quantity {
+        width: 5%;
+    }
+
+    #county {
+        width: 15;
+    }
+
+    #hotspot {
+        width: 35%;
+    }
+
+    #date {
+        width: 9%;
+    }
+
+    #time {
+        width: 7%;
+    }
+
+    #checklistLink {
+        width: 9%;
+    }
+}
+
+#dataSummary {
+    width: 270px;
+    margin-left: 10px;
+    margin-top: 10px;
+    font-size: 14px;
+    position: absolute;
+    .checklistCount {
+        margin-bottom: 40px;
+    }
+    a {
+        display: block;
+        word-wrap: break-word;
+    }
+}

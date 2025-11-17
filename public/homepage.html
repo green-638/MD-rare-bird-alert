@@ -1,0 +1,62 @@
+<html>
+  <head>
+    <title>Homepage</title>
+    <link rel="stylesheet" href="styling.css" />
+  </head>
+  <body>
+    <div class="nameAndNav">
+      <h1 id="siteName">MD rare bird alert</h1>
+      <nav id="nav">
+        <ul>
+          <li><a href="homepage.html">Home</a></li>
+          <li><a href="rareBirdData.html">Rare bird data</a></li>
+          <li><a href="manageAlerts.html">Manage alerts</a></li>
+          <li><a href="help.html">Help</a></li>
+          <li><a href="aboutProject.html">About project</a></li>
+        </ul>
+      </nav>
+    </div>
+    <!-- form -->
+    <div id="alertFormSection">
+      <h1 class="formTitle">Rare bird alert</h1>
+      <form id="alertForm">
+        <!-- email -->
+        <label for="email">Email:</label>
+        <div class="formInput">
+          <input type="text" id="email" />
+        </div>
+        <!-- api key -->
+        <label for="apiKey">Api key:</label>
+        <div class="formInput">
+          <input type="text" id="apiKey" />
+        </div>
+        <!-- api key help -->
+        <div id="apiHelpHomepage">
+          <a href="help.html">Need an API key?</a>
+        </div>
+        <!-- location -->
+        <label for="alertLocation">Location: </label>
+        <div class="formInput">
+          <input type="text" id="alertLocation" name="alertLocation" required />
+          <!-- add select here and add counties and hotspots. require 3 character search minimum-->
+          <!-- populate locations -->
+        </div>
+        <!-- email frequency -->
+        <div class="formInput">
+          <fieldset id="frequency">
+            <legend>Frequency:</legend>
+            <label for="days">Days: </label>
+            <input type="number" id="days" value="0" name="days" />
+            <label for="hours">Hours: </label>
+            <input type="number" id="hours" value="0" name="hours" />
+            <!-- add logic to verify at least 1 value submitted -->
+            <!-- must be <= 30 days. cant get data any older -->
+          </fieldset>
+        </div>
+        <div class="formInput">
+          <input type="submit" value="Submit" id="submit" />
+        </div>
+      </form>
+    </div>
+  </body>
+</html>

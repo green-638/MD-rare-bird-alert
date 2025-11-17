@@ -1,0 +1,62 @@
+@import url(homepage.css);
+@import url(rareBirdData.css);
+
+body {
+    background-color: #063759;
+    color: white;
+    font-family: monospace;
+}
+
+#siteName {
+    display: inline-block;
+    margin-left: 15px;
+}
+
+#nav {
+    float: right;
+
+    li {
+        display: inline-block;
+        padding: 15px;
+    }
+
+    a:link {
+        color: white;
+        text-decoration: none;
+    }
+
+    a:visited {
+        color: white;
+        text-decoration: none;
+    }
+
+    a:hover {
+    color: rgb(173, 243, 255);
+}
+}
+
+.formTitle {
+    margin-left: 0;
+    text-align: center;
+    font-size: 18px;
+}
+
+.formInput {
+    text-align: center;
+}
+
+#apiHelpHomepage, #apiHelpDataPage {
+    a:link {
+        color: rgb(214, 214, 214);
+        text-decoration: none;
+    }
+
+    a:visited {
+        color: rgb(214, 214, 214);
+        text-decoration: none;
+    }
+
+    a:hover {
+    color: rgb(173, 243, 255);
+    }
+}

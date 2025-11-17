@@ -1,0 +1,90 @@
+<html>
+  <head>
+    <title>Rare bird data</title>
+    <link rel="stylesheet" href="styling.css" />
+    <script type="text/javascript" src="rareBirdData.js" defer></script>
+  </head>
+  <body>
+    <div class="nameAndNav">
+      <h1 id="siteName">MD rare bird alert</h1>
+      <nav id="nav">
+        <ul>
+          <li><a href="homepage.html">Home</a></li>
+          <li><a href="rareBirdData.html">Rare bird data</a></li>
+          <li><a href="manageAlerts.html">Manage alerts</a></li>
+          <li><a href="help.html">Help</a></li>
+          <li><a href="aboutProject.html">About project</a></li>
+        </ul>
+      </nav>
+    </div>
+    <!-- data search form  -->
+    <div id="dataSearchSection">
+      <h1 id="dataSearchTitle">Rare bird data</h1>
+      <form id="dataSearch">
+        <!-- api key -->
+        <label for="apiKey">Please enter API key: </label>
+        <input type="text" id="apiKey" />
+        <button type="button" onclick="validateKey()">Enter</button>
+        <p id="keyValidationStatus"></p>
+        <!-- api key help -->
+        <div id="apiHelpDataPage">
+          <a href="help.html">Need an API key?</a>
+        </div>
+        <br />
+        <h3>Search</h3>
+        <span class="dataSearchElement">
+          <!-- select counties -->
+          <label for="filterCounty">County: </label>
+          <input type="text" id="filterCounty" />
+          <!-- search counties button -->
+          <button
+            type="button"
+            id="filterCountyButton"
+            onclick="populateCountySearch()"
+          >
+            Search
+          </button>
+        </span>
+        <!-- start and end date -->
+        <span class="dataSearchElement">
+          <label for="startDate">Start date: </label>
+          <input type="date" id="startDate" />
+          <label for="endDate">End date: </label>
+          <input type="date" id="endDate" />
+        </span>
+        <!-- start and end time -->
+        <!-- div to push onto next line-->
+        <div id="timeInput">
+          <label for="startTime">Start time: </label>
+          <input type="time" id="startTime" />
+          <label for="endTime">End time: </label>
+          <input type="time" id="endTime" />
+        </div>
+        <button type="button" id="submitButton" onclick="populateTable()">
+          Search checklists
+        </button>
+      </form>
+    </div>
+    <!-- search results -->
+    <div id="countyCheckboxes"></div>
+    <!-- data summary -->
+    <div id="dataSummary"></div>
+    <!-- data table -->
+    <div id="dataTableSection">
+      <table id="dataTable">
+        <thead>
+          <tr>
+            <th id="species">Species</th>
+            <th id="quantity">Quantity</th>
+            <th id="county">County</th>
+            <th id="hotspot">Hotspot</th>
+            <th id="date">Date</th>
+            <th id="time">Time</th>
+            <th id="checklistLink">eBird checklist link</th>
+          </tr>
+        </thead>
+        <tbody id="tableBody"></tbody>
+      </table>
+    </div>
+  </body>
+</html>
