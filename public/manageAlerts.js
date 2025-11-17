@@ -12,7 +12,7 @@ function searchAlerts() {
 }
 
 async function loadAlertRequests() {
-    await fetch('http://localhost:3000/alerts')
+    await fetch('/alerts')
     .then((response) => response.json())
     .then((responseJson) => {
         const table = document.getElementById('manageAlertsTable');
