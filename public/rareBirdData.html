@@ -2,7 +2,7 @@
   <head>
     <title>Rare bird data</title>
     <link rel="stylesheet" href="styling.css" />
-    <script src="validation.js" defer></script>
+    <script src="sharedScripts.js" defer></script>
     <script type="text/javascript" src="rareBirdData.js" defer></script>
   </head>
   <body>
@@ -24,7 +24,7 @@
       <form id="dataSearch">
         <!-- api key -->
         <label for="apiKey">Please enter API key: </label>
-        <input type="text" id="apiKey" />
+        <input type="text" id="apiKey" required />
         <button type="button" onclick="validateKey()">Enter</button>
         <p id="keyValidationStatus"></p>
         <!-- api key help -->
@@ -41,7 +41,20 @@
           <button
             type="button"
             id="filterCountyButton"
-            onclick="populateCountySearch()"
+            onclick="populateSearch('county')"
+          >
+            Search
+          </button>
+        </span>
+        <span class="dataSearchElement">
+          <!-- select hotspots -->
+          <label for="filterHotspot">Hotspot: </label>
+          <input type="text" id="filterHotspot" />
+          <!-- search hotspots button -->
+          <button
+            type="button"
+            id="filterHotspotButton"
+            onclick="populateSearch('hotspot')"
           >
             Search
           </button>
@@ -68,6 +81,7 @@
     </div>
     <!-- search results -->
     <div id="countyCheckboxes"></div>
+    <div id="hotspotCheckboxes"></div>
     <!-- data summary -->
     <div id="dataSummary"></div>
     <!-- data table -->

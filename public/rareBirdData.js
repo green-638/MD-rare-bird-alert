@@ -1,120 +1,32 @@
 document.getElementById('countyCheckboxes').style.visibility = 'hidden';
+document.getElementById('hotspotCheckboxes').style.visibility = 'hidden';
 document.getElementById('dataTable').style.visibility = 'hidden';
-
-// create headers & request options for eBird api fetch
-let myHeaders = new Headers();
-let ebirdapitoken;
-let requestOptions = {};
-requestOptions.method = 'GET';
-requestOptions.redirect = 'follow';
-myHeaders.append("X-eBirdApiToken", '');
 
 // hide data page's county checkboxes when click off 
 window.addEventListener('click', function(click){
     if (document.getElementById('countyCheckboxes').contains(click.target) == false &
     document.getElementById('filterCounty').contains(click.target) == false &
     document.getElementById('filterCountyButton').contains(click.target) == false){
-  	    hide(['countyCheckboxes']);
-}});
+  	    countyCheckboxes.style.visibility = 'hidden';
+    }
+});
 
-// load county IDs and names
-function loadCounties() {
-    return fetch('https://api.ebird.org/v2/ref/region/list/subnational2/US-MD',
-        requestOptions)
-    .then((response) => response.json());
-}
+window.addEventListener('click', function(click){
+    if (document.getElementById('hotspotCheckboxes').contains(click.target) == false &
+    document.getElementById('filterHotspot').contains(click.target) == false &
+    document.getElementById('filterHotspotButton').contains(click.target) == false) {
+        hotspotCheckboxes.style.visibility = 'hidden';
+    }
+});
 
 // load reports for specified county
+// make work with hotspots
 function loadReports(county) {
     return fetch(`https://api.ebird.org/v2/data/obs/${county}/recent/notable?detail=full`,
         requestOptions)
     .then((response) => response.json());
 }
 
-// hide specified elements
-function hide(elements) {
-    for (let e=0; e<elements.length; e++) {
-        document.getElementById(elements[e]).style.visibility = 'hidden';
-    }
-}
-
-// grab div for county checkbox search results
-const countyCheckboxes = document.getElementById('countyCheckboxes');
-
-// save ticked county checkboxes
-function saveTicks() {
-    // get search results 
-    const searchResults = countyCheckboxes.children;
-    // array to hold unchecked boxes 
-    const removeCheckbox = [];
-
-    // loop through search results 
-    for (let result = 0; result < searchResults.length; result++) {
-        const checkbox = searchResults[result];
-        // if box not ticked 
-        if (checkbox.nodeName == 'INPUT' & checkbox.checked == false) {
-            // add boxes and labels to array 
-            removeCheckbox.push(checkbox);
-            removeCheckbox.push(searchResults[result+1])
-        }
-    }
-    // remove boxes and labels in array from checkbox div 
-    for (let box=0; box < removeCheckbox.length; box++) {
-        countyCheckboxes.removeChild(removeCheckbox[box]);
-    }
-}
-
-// initialize variable to hold county IDs and names
-let counties;
-
-// populate county search results
-async function populateCountySearch() {
-    // get user search input
-    const countyInput = document.getElementById('filterCounty').value;
-
-    // validate user input
-    const validation = validateInput(countyInput);
-    if (validation) {
-        return false;
-    }
-  
-    // load counties if user hasn't searched yet
-    if (countyCheckboxes.hasChildNodes() == false) {
-        counties = await loadCounties();
-    }
-    
-    // remove unticked boxes before next search */
-    if (countyCheckboxes.hasChildNodes() == true) {
-        saveTicks(countyCheckboxes);
-    }
-
-    counties.forEach(county => {
-        // convert search results and user input to lowercase
-        const countyInputLower = countyInput.toLowerCase();
-        const countyLowercase = county['name'].toLowerCase();
-        const countyID = county['code'];
-        // check if county matches user input and isn't already ticked 
-        if (countyLowercase.includes(countyInputLower) &
-        document.getElementById(countyID) == null) {
-            // create checkbox 
-            const newCheckbox = document.createElement('input');
-            newCheckbox.type = 'checkbox';
-            newCheckbox.id = county['code'];
-            newCheckbox.value = county['name'];
-
-            // create label 
-            const newLabel = document.createElement('label');
-            newLabel.innerHTML = newCheckbox.value;
-            newLabel.appendChild(newCheckbox);
-
-            // add checkbox and label to search results 
-            countyCheckboxes.appendChild(newCheckbox);
-            countyCheckboxes.appendChild(newLabel);
-        }
-    });
-    // unhide search results 
-    countyCheckboxes.style.visibility = 'visible';
-}
 
 /* validate input start & end date/time
 must be within last 30 days and end date after start date */
