@@ -16,6 +16,14 @@
     font-size: 12;
 }
 
+#hotspotSearchNote {
+    position: absolute;
+    text-wrap-mode: wrap;
+    width: 240px;
+    margin-left: 560px;
+    font-size: 10px;
+}
+
 #keyValidationStatus {
     position: absolute;
     display: inline-block;
@@ -74,7 +82,7 @@
 }
 
 #submitButton {
-    margin-top: 20px;
+    margin-top: 30px;
     padding: 5px;
 }
 /* end data form */
