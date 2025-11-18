@@ -27,7 +27,7 @@ async function validateKey() {
 }
 
 function validateInput(userInput) {
-    var validation_regex = /[\d!#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/;
+    var validation_regex = /[\d!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/;
     if (validation_regex.test(userInput)) {
         alert("Please enter characters A-Z");
         return true;
@@ -48,12 +48,38 @@ function loadHotspots() {
     .then((response) => response.json());
 }
 
-// grab div for county checkbox search results
+
+// add currently selected counties to array 
+let selectCounties = [];
+function getSelectedCounties() {
+    const tempArray = [];
+    countySearchResults = countyCheckboxes.children;
+    // loop through checkboxes
+    for (let countyNum = 0; countyNum < countySearchResults.length; countyNum++) {
+        const county = countySearchResults[countyNum];
+        // check if checkbox is ticked
+        if (county.nodeName == 'INPUT' &
+            county.checked == true &
+            !selectCounties.includes(county.id)) {
+                // add county ID to counties array
+                selectCounties.push(county.id);
+        }
+        // collect counties in selectCounties that are no longer selected
+        else if (county.checked == false &
+            selectCounties.includes(county.id)) {
+                tempArray.push(county.id)
+            }
+    }
+    // remove unselected counties
+    selectCounties = selectCounties.filter((e) => !tempArray.includes(e));
+}
+
+// grab divs for checkbox search results
 const countyCheckboxes = document.getElementById('countyCheckboxes');
 const hotspotCheckboxes = document.getElementById('hotspotCheckboxes');
 
-// remove unticked checkboxes
-function saveTicks(locType) {
+// remove unchecked checkboxes
+function removeUnchecked(locType) {
     let searchResults;
     let checkboxes;
     // get search results 
@@ -66,22 +92,48 @@ function saveTicks(locType) {
         checkboxes = document.getElementById('hotspotCheckboxes');
     }
 
+    // update selectedCounties array 
+    getSelectedCounties();
     // array to hold unchecked boxes 
     const removeCheckbox = [];
 
-    // loop through search results 
-    for (let result = 0; result < searchResults.length; result++) {
-        const checkbox = searchResults[result];
-        // if box not ticked 
-        if (checkbox.nodeName == 'INPUT' & checkbox.checked == false) {
-            // add boxes and labels to array 
-            removeCheckbox.push(checkbox);
-            removeCheckbox.push(searchResults[result+1])
+    if (locType == 'hotspot') {
+        // loop through search results 
+        for (let result = 0; result < searchResults.length; result++) {
+            const checkbox = searchResults[result];
+            if (checkbox.nodeName == 'INPUT') { 
+                // match for countyId stored in hotspot checkbox id
+                const regex = /[\w-]+$/;
+                const countyId = checkbox.id.match(regex);
+                // add to array if box not checked or if hotspot is in a selected county
+                if (checkbox.checked == false | selectCounties.includes(countyId[0])) {
+                    // add boxes and labels to array 
+                    removeCheckbox.push(checkbox);
+                    removeCheckbox.push(searchResults[result+1])
+                }
+            }
+        }
+        // remove boxes and labels in array from checkbox div 
+        for (let box=0; box < removeCheckbox.length; box++) {
+            checkboxes.removeChild(removeCheckbox[box]);
         }
     }
-    // remove boxes and labels in array from checkbox div 
-    for (let box=0; box < removeCheckbox.length; box++) {
-        checkboxes.removeChild(removeCheckbox[box]);
+    // county
+    else {
+        // loop through search results 
+        for (let result = 0; result < searchResults.length; result++) {
+            const checkbox = searchResults[result];
+            // if box not ticked 
+            if (checkbox.nodeName == 'INPUT' & checkbox.checked == false) {
+                // add boxes and labels to array 
+                removeCheckbox.push(checkbox);
+                removeCheckbox.push(searchResults[result+1])
+            }
+        }
+        // remove boxes and labels in array from checkbox div 
+        for (let box=0; box < removeCheckbox.length; box++) {
+            checkboxes.removeChild(removeCheckbox[box]);
+        }
     }
 }
 
@@ -89,7 +141,7 @@ function saveTicks(locType) {
 let counties;
 let hotspots;
 
-// populate county search results
+// populate location search results
 async function populateSearch(locType) { // change loc to loctype
     let locInput = '';
     // get user search input
@@ -98,8 +150,9 @@ async function populateSearch(locType) { // change loc to loctype
     }
     else if (locType == 'hotspot') {
         locInput = document.getElementById('filterHotspot').value;
-        if (locInput.length < 3) {
-            alert('Please enter at least 3 characters');
+        inputChar = locInput.replace(' ', '');
+        if (inputChar.length < 5) {
+            alert('Please enter at least 5 characters');
             return false;
         }
     }
@@ -121,35 +174,47 @@ async function populateSearch(locType) { // change loc to loctype
         // load hotspots if user hasn't searched yet
         if (hotspotCheckboxes.hasChildNodes() == false) {
             hotspots = await loadHotspots();
-            console.log(hotspots.length)
         }
     }
     
-    // remove unticked boxes before next search */
-    if (countyCheckboxes.hasChildNodes() == true & locType == 'county') {
-        saveTicks('county');
-    }
-    else if (hotspotCheckboxes.hasChildNodes() == true & locType == 'hotspot') {
-        saveTicks('hotspot');
-    }
-
+    // remove unticked boxes before next search, then load search results */
+    if (countyCheckboxes.hasChildNodes() == true) {
+            removeUnchecked('county');
+        }
+    if (hotspotCheckboxes.hasChildNodes() == true) {
+            removeUnchecked('hotspot');
+        }
+    
     if (locType == 'county') {
         counties.forEach(county => {
             createCheckboxes(county, locInput, 'county');
         })
-        countyCheckboxes.style.visibility = 'visible';
+
+        if (countyCheckboxes.hasChildNodes()) {
+            countyCheckboxes.style.visibility = 'visible';
+        }
+        else {
+            alert(`"${locInput}" returned no results`);
+        }
     }
     else {
         hotspots.forEach(hotspot => {
             createCheckboxes(hotspot, locInput, 'hotspot');
-        })
-        hotspotCheckboxes.style.visibility = 'visible';
+        })  
+
+        if (hotspotCheckboxes.hasChildNodes()) {
+            hotspotCheckboxes.style.visibility = 'visible';
+        }
+        else {
+            alert(`"${locInput}" returned no results, or they were included in the selected counties`);
+        }
     }
 }
 
 function createCheckboxes(loc, locInput, locType) {
     let name = '';
     let id = '';
+    // assign attribute names
     if (locType == 'county') {
         name = 'name';
         id = 'code';
@@ -162,17 +227,31 @@ function createCheckboxes(loc, locInput, locType) {
     // convert search results and user input to lowercase
     const locInputLower = locInput.toLowerCase();
     const locLowercase = loc[name].toLowerCase();
-    const locID = loc[id]; 
+    const locId = loc[id]; 
+    
+    // update selectedCounties array
+    getSelectedCounties();
+    
+    // don't create search result for current hotspot if it's in a selected county
+    if (locType == 'hotspot' & selectCounties.includes(loc['subnational2Code'])) {
+        return false;
+    }
 
-    // check if location matches user input and isn't already ticked 
+    // if location matches user input and isn't already checked 
     if (locLowercase.includes(locInputLower) &
-        document.getElementById(locID) == null) {
+        document.getElementById(locId) == null) {
         // create checkbox 
         const newCheckbox = document.createElement('input');
         newCheckbox.type = 'checkbox';
         newCheckbox.value = loc[name]; 
-        newCheckbox.id = loc[id]; 
-      
+        // combine hotspot id and its county's id- necessary for checking if hotspot checkbox is in selected counties
+        if (locType == 'hotspot') {
+            newCheckbox.id = `${loc[id]},${loc['subnational2Code']}`;   
+        }
+        else {
+            newCheckbox.id = loc[id]; 
+        }
+        
         // create label 
         const newLabel = document.createElement('label');
         newLabel.innerHTML = newCheckbox.value;

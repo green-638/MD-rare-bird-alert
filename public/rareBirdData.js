@@ -19,10 +19,9 @@ window.addEventListener('click', function(click){
     }
 });
 
-// load reports for specified county
-// make work with hotspots
-function loadReports(county) {
-    return fetch(`https://api.ebird.org/v2/data/obs/${county}/recent/notable?detail=full`,
+
+function loadReports(locationId) {
+    return fetch(`https://api.ebird.org/v2/data/obs/${locationId}/recent/notable?detail=full`,
         requestOptions)
     .then((response) => response.json());
 }
@@ -59,6 +58,7 @@ function validateSearchDate() {
     }
 }
 
+
 // add reports to search results table
 async function populateTable() {
     // reset table
@@ -68,6 +68,13 @@ async function populateTable() {
             tableBody.removeChild(tableBody.firstChild);
         }
     }
+    // reset data summary
+    const dataSummary = document.getElementById('dataSummary');
+    if (dataSummary.hasChildNodes() == true) {
+        while (dataSummary.firstChild) {
+            dataSummary.removeChild(dataSummary.firstChild);
+        }
+    }
 
     // validate date and time 
     const dateValidate = validateSearchDate();
@@ -75,21 +82,26 @@ async function populateTable() {
         return false;
     }
 
-    // select counties 
-    const selectCounties = [];
-    const searchResults = countyCheckboxes.children;
+    // update selectedCounties array in sharedScripts.js
+    getSelectedCounties();
+
+    // store selected hotspots
+    const selectHotspots = [];
+    const hotspotSearchResults = hotspotCheckboxes.children;
     // loop through checkboxes
-    for (let result = 0; result < searchResults.length; result++) {
-        const checkbox = searchResults[result];
+    for (let result = 0; result < hotspotSearchResults.length; result++) {
+        const checkbox = hotspotSearchResults[result];
         // check if checkbox is ticked
         if (checkbox.nodeName == 'INPUT' & checkbox.checked == true) {
-            // add county ID to counties array
-            selectCounties.push(checkbox.id);
+            // select hotspot id
+            hotspotId = checkbox.id.match(/^\w+/)[0];
+            selectHotspots.push(hotspotId);
         }
     }
-    // verify >=1 county selected 
-    if (selectCounties.length == 0) {
-        alert('Please select at least 1 county');
+
+    // verify >=1 location selected 
+    if (selectCounties.length == 0 & selectHotspots.length == 0) {
+        alert('Please select at least location');
         return false;
     }
 
@@ -101,10 +113,26 @@ async function populateTable() {
     let checklistCount = 0;
     const speciesCount = {};
 
-    // get reports for each county
-    for (let county=0; county<selectCounties.length; county++) {
-        // load reports for current county
-        const reports = await loadReports(selectCounties[county]);
+    let locations;
+    if (selectCounties.length > 0) {
+        // if selected both
+        if (selectHotspots.length > 0) {
+            locations = selectCounties.concat(selectHotspots);
+        } 
+        // if selected only counties
+        else {
+            locations = selectCounties;
+        }
+    } 
+    // if selected only hotspots
+    else {
+        locations = selectHotspots;
+    }
+
+    // get reports for each location                 
+    for (loc in locations) {
+        // load reports
+        const reports = await loadReports(locations[loc]);
         reports.forEach(report => {
             // if report date/time meet criteria
             if (report['obsDt'] >= startDate & report['obsDt'] <= endDate) {
@@ -115,7 +143,12 @@ async function populateTable() {
                 speciesCol.innerHTML = report['comName'];
                 // create species quantity column
                 const quantityCol = document.createElement('td');
-                quantityCol.innerHTML = report['howMany'];
+                if (report['howMany'] == undefined) {
+                    quantityCol.innerHTML = 'X';
+                }
+                else {
+                    quantityCol.innerHTML = report['howMany'];
+                }
                 // create county name column
                 const countyCol = document.createElement('td');
                 countyCol.innerHTML = report['subnational2Name'];
@@ -139,8 +172,8 @@ async function populateTable() {
                 // loop through rows to find matching records
                 const columns = [speciesCol, quantityCol, countyCol, hotspotCol, dateCol, timeCol, linkCol];
                 let match = false;
-                for (let i=0; i<tableBody.rows.length; i++) {
-                    const row = tableBody.rows[i]
+                for (let rowNum=0; rowNum<tableBody.rows.length; rowNum++) {
+                    const row = tableBody.rows[rowNum];
                     // if matching record exists- same species, hotspot, date
                     if (speciesCol.innerHTML == row.cells[0].innerHTML &
                         hotspotCol.innerHTML == row.cells[3].innerHTML &
@@ -178,11 +211,17 @@ async function populateTable() {
             }
         });
     }
-    // unhide data table
-    document.getElementById('dataTable').style.visibility = 'visible';
+    if (tableBody.hasChildNodes()) {
+        // unhide data table
+        document.getElementById('dataTable').style.visibility = 'visible';
+    }
+    else {
+        alert('No checklists met the search criteria');
+        return false;
+    }
+    
     
     // add data summary to page
-    const dataSummary = document.getElementById('dataSummary');
     const summaryTitle = document.createElement('h2');
     summaryTitle.innerHTML = 'Data summary';
     dataSummary.appendChild(summaryTitle);
