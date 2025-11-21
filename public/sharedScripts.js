@@ -227,7 +227,6 @@ function createCheckboxes(loc, locInput, locType) {
     // convert search results and user input to lowercase
     const locInputLower = locInput.toLowerCase();
     const locLowercase = loc[name].toLowerCase();
-    const locId = loc[id]; 
     
     // update selectedCounties array
     getSelectedCounties();
@@ -237,20 +236,21 @@ function createCheckboxes(loc, locInput, locType) {
         return false;
     }
 
-    // if location matches user input and isn't already checked 
+    // create checkbox 
+    const newCheckbox = document.createElement('input');
+    newCheckbox.type = 'checkbox';
+    newCheckbox.value = loc[name]; 
+    // combine hotspot id and its county's id- necessary for checking if hotspot checkbox is in selected counties
+    if (locType == 'hotspot') {
+        newCheckbox.id = `${loc[id]},${loc['subnational2Code']}`;   
+    }
+    else {
+        newCheckbox.id = loc[id]; 
+    }
+    
+    // continue if location matches user input and isn't already checked 
     if (locLowercase.includes(locInputLower) &
-        document.getElementById(locId) == null) {
-        // create checkbox 
-        const newCheckbox = document.createElement('input');
-        newCheckbox.type = 'checkbox';
-        newCheckbox.value = loc[name]; 
-        // combine hotspot id and its county's id- necessary for checking if hotspot checkbox is in selected counties
-        if (locType == 'hotspot') {
-            newCheckbox.id = `${loc[id]},${loc['subnational2Code']}`;   
-        }
-        else {
-            newCheckbox.id = loc[id]; 
-        }
+        document.getElementById(newCheckbox.id) == null) { 
         
         // create label 
         const newLabel = document.createElement('label');

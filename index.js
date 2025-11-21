@@ -2,6 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const supabaseClient = require('@supabase/supabase-js');
 const dotenv = require('dotenv');
+const {query, validationResult} = require('express-validator')
 
 const app = express();
 const port = 3000;

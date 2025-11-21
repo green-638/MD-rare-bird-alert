@@ -2,6 +2,7 @@
   <head>
     <title>Homepage</title>
     <link rel="stylesheet" href="styling.css" />
+    <link rel="stylesheet" href="rareBirdAlert.css" />
     <script src="sharedScripts.js" defer></script>
     <script src="rareBirdAlert.js" defer></script>
   </head>
@@ -24,41 +25,70 @@
       <form id="alertForm">
         <!-- email -->
         <label for="email">Email:</label>
-        <div class="formInput">
+        <div class="alertInput">
           <input type="text" id="email" />
         </div>
         <!-- api key -->
-        <label for="apiKey">Api key:</label>
-        <div class="formInput">
-          <input type="text" id="apiKey" />
+        <label for="apiKey">Please enter API key: </label>
+        <div class="alertInput">
+          <input type="text" id="apiKey" required />
         </div>
+        <button type="button" id="validateKeyButton" onclick="validateKey()">
+          Enter
+        </button>
+        <p id="keyValidationStatus"></p>
         <!-- api key help -->
-        <div id="apiHelpHomepage">
+        <div id="apiHelpDataPage">
           <a href="help.html">Need an API key?</a>
         </div>
-        <!-- location -->
-        <label for="alertLocation">Location: </label>
-        <div class="formInput">
-          <input type="text" id="alertLocation" name="alertLocation" required />
-          <!-- add select here and add counties and hotspots. require 3 character search minimum-->
-          <!-- populate locations -->
+        <br />
+        <!-- select counties -->
+        <label for="filterCounty">County: </label>
+        <div class="alertInput">
+          <input type="text" id="filterCounty" />
         </div>
+        <!-- search counties button -->
+        <button
+          type="button"
+          id="filterCountyButton"
+          onclick="populateSearch('county')"
+        >
+          Search
+        </button>
+        <!-- select hotspots -->
+        <label for="filterHotspot">Hotspot: </label>
+        <div class="alertInput">
+          <input type="text" id="filterHotspot" />
+        </div>
+        <!-- search hotspots button -->
+        <button
+          type="button"
+          id="filterHotspotButton"
+          onclick="populateSearch('hotspot')"
+        >
+          Search
+        </button>
+        <p id="hotspotSearchNote">
+          Note: Hotspots will disappear from this search if their county is
+          selected
+        </p>
         <!-- email frequency -->
-        <div class="formInput">
-          <fieldset id="frequency">
-            <legend>Frequency:</legend>
+        <fieldset id="frequency">
+          <legend>Frequency:</legend>
+          <span class="alertInput">
             <label for="days">Days: </label>
             <input type="number" id="days" value="0" name="days" />
             <label for="hours">Hours: </label>
             <input type="number" id="hours" value="0" name="hours" />
-            <!-- add logic to verify at least 1 value submitted -->
-            <!-- must be <= 30 days. cant get data any older -->
-          </fieldset>
-        </div>
-        <div class="formInput">
-          <input type="submit" value="Submit" id="submit" />
-        </div>
+          </span>
+          <!-- add logic to verify at least 1 value submitted -->
+          <!-- must be <= 30 days. cant get data any older -->
+        </fieldset>
+        <input type="submit" value="Submit" id="submit" />
       </form>
     </div>
+    <!-- search results -->
+    <div id="countyCheckboxes"></div>
+    <div id="hotspotCheckboxes"></div>
   </body>
 </html>

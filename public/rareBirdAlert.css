@@ -3,6 +3,7 @@
     width: 500px;
     margin: 0 auto;
     margin-top: 100px;
+    background-color: rgb(114, 156, 156);
 
     label {
         margin-left: 60px;
@@ -13,8 +14,12 @@
     }
 }
 
-#email, #apiKey, #alertLocation {
-    width: 200px;
+.alertInput {
+    text-align: center;
+}
+
+#validateKeyButton, #filterCountyButton, #filterHotspotButton {
+    float: right;
 }
 
 #apiHelpHomepage {
