@@ -1,40 +1,65 @@
 #alertFormSection {
     /* center form */
-    width: 500px;
+    width: 600px;
     margin: 0 auto;
     margin-top: 100px;
-    background-color: rgb(114, 156, 156);
 
     label {
-        margin-left: 60px;
+        display: block;
+        margin-left: 100px;
         margin-top: 10px;
         margin-bottom: 10px;
-        /* make form input on next line */
-        display: block;
     }
 }
 
 .alertInput {
-    text-align: center;
-}
+    width: inherit;
+    margin: 0 auto;
+    
+    input {
+        width: 180px;
+        margin-left: 210px;
+    }
+    
+    button {
+        width: 60px;
+    }
 
-#validateKeyButton, #filterCountyButton, #filterHotspotButton {
-    float: right;
+    p {
+       display: inline-block;
+       position: absolute;
+       margin-left: 5px;
+       margin-top: 3px;
+    }
 }
 
 #apiHelpHomepage {
     text-align: right;
-    margin-right: 150px;
+    margin-right: 210px;
+    margin-top: 5px;
+    margin-bottom: -25px;
     font-size: 12px;
 }
 
-/* start frequency section */
+#hotspotSearchNote {
+    text-align: center;
+    text-wrap-mode: wrap;
+    width: 240px;
+    margin-left: 180px;
+    margin-bottom: -15px;
+    font-size: 10px;
+}
+
+#alertTimeInput {
+    text-align: center;
+}
+
 #frequency {
     margin-top: 20px;
     border: 0;
 
     legend {
-        margin-left: 45px;
+        margin-left: 85px;
         margin-bottom: 5px;
     }
 
@@ -47,8 +72,45 @@
 #days, #hours {
     width: 70px;
 }
-/* end frequency section */
 
-#submit {
-    margin-top: 20px;
+#alertSubmit {
+    width: 60px;
+    margin: 0 auto;
+    margin-top: 10px;
+}
+
+#countyCheckboxes,  #hotspotCheckboxes {
+    padding: 10px;
+    position: absolute;
+    z-index: 1;
+    background-color: rgb(255, 255, 255);
+    border-radius: 15px;
+    
+    label {
+        display: block;
+        margin-left: 30px;
+        margin-bottom: 25px;
+        margin-top: -25px;
+        color: black;
+    }
+
+    input {
+        margin-bottom: 10px;
+    }
+}
+
+#countyCheckboxes {
+    width: 170px;
+    margin: 0 auto;
+    right: 0;
+    left: 0;
+    margin-top: -202px;
+}
+
+#hotspotCheckboxes {
+    width: 320px;
+    margin: 0 auto;
+    right: 0;
+    left: 0;
+    margin-top: -145px;
 }

@@ -26,19 +26,19 @@
         <!-- email -->
         <label for="email">Email:</label>
         <div class="alertInput">
-          <input type="text" id="email" />
+          <input type="text" id="email" required />
         </div>
         <!-- api key -->
-        <label for="apiKey">Please enter API key: </label>
+        <label for="apiKey">API key: </label>
         <div class="alertInput">
           <input type="text" id="apiKey" required />
+          <button type="button" id="validateKeyButton" onclick="validateKey()">
+            Enter
+          </button>
+          <p id="keyValidationStatus"></p>
         </div>
-        <button type="button" id="validateKeyButton" onclick="validateKey()">
-          Enter
-        </button>
-        <p id="keyValidationStatus"></p>
         <!-- api key help -->
-        <div id="apiHelpDataPage">
+        <div id="apiHelpHomePage">
           <a href="help.html">Need an API key?</a>
         </div>
         <br />
@@ -46,28 +46,28 @@
         <label for="filterCounty">County: </label>
         <div class="alertInput">
           <input type="text" id="filterCounty" />
+          <!-- search counties button -->
+          <button
+            type="button"
+            id="filterCountyButton"
+            onclick="populateSearch('county')"
+          >
+            Search
+          </button>
         </div>
-        <!-- search counties button -->
-        <button
-          type="button"
-          id="filterCountyButton"
-          onclick="populateSearch('county')"
-        >
-          Search
-        </button>
         <!-- select hotspots -->
         <label for="filterHotspot">Hotspot: </label>
         <div class="alertInput">
           <input type="text" id="filterHotspot" />
+          <!-- search hotspots button -->
+          <button
+            type="button"
+            id="filterHotspotButton"
+            onclick="populateSearch('hotspot')"
+          >
+            Search
+          </button>
         </div>
-        <!-- search hotspots button -->
-        <button
-          type="button"
-          id="filterHotspotButton"
-          onclick="populateSearch('hotspot')"
-        >
-          Search
-        </button>
         <p id="hotspotSearchNote">
           Note: Hotspots will disappear from this search if their county is
           selected
@@ -75,16 +75,18 @@
         <!-- email frequency -->
         <fieldset id="frequency">
           <legend>Frequency:</legend>
-          <span class="alertInput">
+          <div id="alertTimeInput">
             <label for="days">Days: </label>
             <input type="number" id="days" value="0" name="days" />
             <label for="hours">Hours: </label>
             <input type="number" id="hours" value="0" name="hours" />
-          </span>
+          </div>
           <!-- add logic to verify at least 1 value submitted -->
           <!-- must be <= 30 days. cant get data any older -->
         </fieldset>
-        <input type="submit" value="Submit" id="submit" />
+        <div id="alertSubmit">
+          <input type="submit" value="Submit" />
+        </div>
       </form>
     </div>
     <!-- search results -->
