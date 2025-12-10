@@ -29,7 +29,7 @@ async function searchAlerts() {
         })
         .then((response) => response.json())
         .then((responseJson) => {
-
+            // validate email
             if (responseJson['validate'] == 'fail') {
                 alert('Email has invalid format or does not exist');
                 return;

@@ -56,7 +56,7 @@ async function createAlert() {
                 date.setSeconds(0,0);
 
                 // prevent duplicate alerts
-                let duplicate = false;
+                let abort = false;
                 await fetch('/alert', {
                     headers: {
                         email: document.getElementById('email').value,
@@ -64,19 +64,26 @@ async function createAlert() {
                 })
                 .then((response) => response.json())
                 .then((responseJson) => {
+                    // validate email
+                    if (responseJson['validate'] == 'fail') {
+                        alert('Email has invalid format or does not exist');
+                        abort = true;
+                        return;
+                    };
+
                     responseJson.forEach((row) => {
                         if (row['location_id'] == locId) {
                             alert('You already have an alert for one of the selected locations. Please select a different location.');
-                            duplicate = true;
+                            abort = true;
                             return false;
                         }
                     })
                 });
 
-                if (duplicate) {
+                if (abort) {
                     return false;
                 }
-
+     
                 await fetch(`/alert`, {
                     method: 'POST',
                     body: JSON.stringify({
@@ -90,6 +97,7 @@ async function createAlert() {
                         'Content-type': 'application/json',
                     },
                 });
+                alert('Alert creation successful');
             }
         }
     }
