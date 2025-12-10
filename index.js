@@ -24,8 +24,25 @@ app.get('/', (req, res) => {
 // get rare bird alerts
 app.get('/alert', async (req, res) => {
     const {data, error} = await supabase.from('alerts')
-    .select('email, location_id, interval')
+    .select('id, email, location_id, interval')
     .eq('email', `${req.headers.email}`);
+
+    if (error) {
+        console.log(`Error ${error}`);
+        res.statusCode = 500;
+        res.send(error);
+        return;
+    } else {
+        res.send(data);
+    }
+});
+
+// delete rare bird alerts
+app.delete('/alert', async (req, res) => {
+    const {data, error} = await supabase
+    .from('alerts')
+    .delete()
+    .eq('id', `${req.body.id}`)
 
     if (error) {
         console.log(`Error ${error}`);

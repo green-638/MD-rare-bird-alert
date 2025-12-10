@@ -166,7 +166,7 @@ async function populateTable() {
                 const link = document.createElement('a');
                 link.innerHTML = 'Link';
                 link.href = `https://ebird.org/checklist/${report['subId']}`;
-                link.target = '_blank'
+                link.target = '_blank';
                 linkCol.appendChild(link);
                 
                 // loop through rows to find matching records

@@ -14,7 +14,7 @@ async function searchAlerts() {
     }
     else {
         // reset table
-        const table = document.getElementById('manageAlertsTable');
+        const table = document.getElementById('tableBody');
         if (table.hasChildNodes() == true) {
             while (table.firstChild) {
                 table.removeChild(table.firstChild);
@@ -43,19 +43,55 @@ async function searchAlerts() {
                     link.href = `https://ebird.org/hotspot/${alert['location_id']}`;
                 }
                 link.innerHTML = `${alert['location_id']}`;
+                link.target = '_blank';
                 location.appendChild(link);
-
 
                 const interval = document.createElement('td');
                 interval.innerHTML = alert['interval'];
 
+                const holdButton = document.createElement('td');
+                const deleteButton = document.createElement('button');
+                deleteButton.innerHTML = 'X';
+                deleteButton.id = alert['id'];
+                deleteButton.className = 'deleteButton';
+                holdButton.appendChild(deleteButton);
+
                 row.appendChild(email);
                 row.appendChild(location);
                 row.appendChild(interval);
+                row.appendChild(deleteButton);
 
                 table.appendChild(row);
             })
-            table.style.visibility = 'visible';
+            document.getElementById('manageAlertsTable').style.visibility = 'visible';
         });
     }
+}
+
+document.addEventListener('click', function(click) {
+    if (click.target.className == 'deleteButton') {
+        let deleteButtons = document.getElementsByClassName('deleteButton');
+        let buttonId;
+        for (row in deleteButtons) {
+            if (deleteButtons[row].contains(click.target) == true) {
+                buttonId = deleteButtons[row].id;
+                break;
+            }
+        }
+        deleteRow(Number(buttonId));
+        alert('Deletion successful');
+    }
+});
+
+async function deleteRow(buttonId) {
+    await fetch('/alert', {
+        method: 'DELETE',
+        body: JSON.stringify({
+            // button id equivalent to row id
+            id: `${buttonId}`,
+        }),
+        headers: {
+            'Content-type': 'application/json',
+        },
+    });
 }

@@ -27,7 +27,7 @@ async function validateKey() {
 }
 
 function validateInput(userInput) {
-    var validation_regex = /[^\d\w\-@'\.]+/;
+    var validation_regex = /[^\d\w\-@'\.\s]+/;
     if (validation_regex.test(userInput)) {
         alert("Please enter allowed characters");
         return true;
