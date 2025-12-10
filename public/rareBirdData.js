@@ -31,11 +31,11 @@ function loadReports(locationId) {
 must be within last 30 days and end date after start date */
 function validateSearchDate() {
     // get current date 
-    let currentDate = new Date();
+    const currentDate = new Date();
     // create new date obj 
-    const oldDate = new Date(currentDate);
+    let oldDate = new Date();
     // set old date to 30 days ago 
-    oldDate.setDate(oldDate.getDate() - 30);
+    oldDate.setDate(currentDate.getDate() - 30);
 
     // get user input start date and time, create start date object
     let inputStartDate = document.getElementById('startDate').value;

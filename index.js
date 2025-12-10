@@ -2,7 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const supabaseClient = require('@supabase/supabase-js');
 const dotenv = require('dotenv');
-const {query, validationResult} = require('express-validator')
+//const {query, validationResult} = require('express-validator')
 
 const app = express();
 const port = 3000;
@@ -22,7 +22,7 @@ app.get('/', (req, res) => {
 });
 
 // get rare bird alerts
-app.get('/alerts', async (req, res) => {
+app.get('/alert', async (req, res) => {
     const {data, error} = await supabase.from('alerts').select();
 
     if (error) {
@@ -36,18 +36,22 @@ app.get('/alerts', async (req, res) => {
 });
 
 // post rare bird alerts
-app.post('/alerts', async (req, res) => {
+app.post('/alert', async (req, res) => {
     console.log('Add alert request');
     console.log('Request:', req.body);
 
-    const userEmail = req.body.userEmail;
-    const userLocation = req.body.userLocation;
-    const userInterval = req.body.userInterval;
-
+    const email = req.body.email;
+    const locId = req.body.locId;
+    const locType = req.body.locType;
+    const interval = req.body.interval;
+    const date = req.body.date;
+    
     const {data, error} = await supabase.from('alerts').insert({
-        email: userEmail,
-        location: userLocation,
-        interval: userInterval
+        email: email,
+        location_id: locId,
+        location_type: locType,
+        interval: interval,
+        alert_date: date,
     })
     .select();
 

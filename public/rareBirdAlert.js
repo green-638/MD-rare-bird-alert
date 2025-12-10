@@ -17,3 +17,58 @@ window.addEventListener('click', function(click){
         hotspotCheckboxes.style.visibility = 'hidden';
     }
 });
+
+const form = document.querySelector('form');
+form.addEventListener('submit', (event) => {
+    event.preventDefault();
+});
+
+async function createAlert() {
+    removeUnchecked('county');
+    removeUnchecked('hotspot');
+    const countyCheckboxes = document.getElementById('countyCheckboxes');
+    const hotspotCheckboxes = document.getElementById('hotspotCheckboxes');
+    const checkboxes = [countyCheckboxes.children, hotspotCheckboxes.children];
+
+    // iterate through locations
+    for (locType in checkboxes) {
+        const locations = checkboxes[locType];
+        for (loc in locations) {
+            if (locations[loc].nodeName == 'INPUT') {
+                const locId = locations[loc].id.match(/[\w-]+/)[0];
+                let locType;
+                // hotspot IDs begin with L, counties begin with US
+                if (locId.slice(0,1) == 'L') {
+                    locType = 'hotspot';
+                }
+                else {
+                    locType = 'county';
+                }
+
+                const timeInput = document.getElementById('alertTime').value;
+                const interval = document.getElementById('interval').value;
+                let date = new Date();
+
+                // set next alert date
+                date.setDate(date.getDate() + Number(interval)); 
+                date.setHours(Number(timeInput.slice(0, 2)));
+                date.setMinutes(Number(timeInput.slice(3, 5)));
+                date.setSeconds(0,0);
+
+                await fetch(`/alert`, {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        email: `${document.getElementById('email').value}`,
+                        locId: `${locId}`,
+                        locType: `${locType}`,
+                        interval: `${interval}`,
+                        date: `${date}`,
+                    }),
+                    headers: {
+                        'Content-type': 'application/json',
+                    },
+                });
+            }
+        }
+    }
+}

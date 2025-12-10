@@ -22,7 +22,7 @@
     <!-- form -->
     <div id="alertFormSection">
       <h1 class="formTitle">Rare bird alert</h1>
-      <form id="alertForm">
+      <form id="alertForm" onsubmit="createAlert()">
         <!-- email -->
         <label for="email">Email:</label>
         <div class="alertInput">
@@ -76,10 +76,16 @@
         <fieldset id="frequency">
           <legend>Frequency:</legend>
           <div id="alertTimeInput">
-            <label for="days">Days: </label>
-            <input type="number" id="days" value="0" name="days" />
-            <label for="hours">Hours: </label>
-            <input type="number" id="hours" value="0" name="hours" />
+            <label for="interval">Days: </label>
+            <input
+              type="number"
+              id="interval"
+              value="0"
+              name="interval"
+              required
+            />
+            <label for="alertTime">Alert time: </label>
+            <input type="time" id="alertTime" name="alertTime" required />
           </div>
           <!-- add logic to verify at least 1 value submitted -->
           <!-- must be <= 30 days. cant get data any older -->

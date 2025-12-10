@@ -240,7 +240,7 @@ function createCheckboxes(loc, locInput, locType) {
     const newCheckbox = document.createElement('input');
     newCheckbox.type = 'checkbox';
     newCheckbox.value = loc[name]; 
-    // combine hotspot id and its county's id- necessary for checking if hotspot checkbox is in selected counties
+    // combine hotspot id and its county's id- necessary for checking if a hotspot is in the selected counties
     if (locType == 'hotspot') {
         newCheckbox.id = `${loc[id]},${loc['subnational2Code']}`;   
     }
