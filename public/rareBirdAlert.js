@@ -55,6 +55,28 @@ async function createAlert() {
                 date.setMinutes(Number(timeInput.slice(3, 5)));
                 date.setSeconds(0,0);
 
+                // prevent duplicate alerts
+                let duplicate = false;
+                await fetch('/alert', {
+                    headers: {
+                        email: document.getElementById('email').value,
+                    },
+                })
+                .then((response) => response.json())
+                .then((responseJson) => {
+                    responseJson.forEach((row) => {
+                        if (row['location_id'] == locId) {
+                            alert('You already have an alert for one of the selected locations. Please select a different location.');
+                            duplicate = true;
+                            return false;
+                        }
+                    })
+                });
+
+                if (duplicate) {
+                    return false;
+                }
+
                 await fetch(`/alert`, {
                     method: 'POST',
                     body: JSON.stringify({
