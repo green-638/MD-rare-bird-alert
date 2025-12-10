@@ -2,7 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const supabaseClient = require('@supabase/supabase-js');
 const dotenv = require('dotenv');
-//const {query, validationResult} = require('express-validator')
+const validator = require("email-validator");
 
 const app = express();
 const port = 3000;
@@ -16,13 +16,16 @@ const supabaseUrl = process.env.SUPABASE_URL;
 const supabaseKey = process.env.SUPABASE_KEY;
 const supabase = supabaseClient.createClient(supabaseUrl, supabaseKey);
 
-// get rare bird alert page
-app.get('/', (req, res) => {
-    res.sendFile('public/rareBirdAlert.html', {root: __dirname});
-});
-
-// get rare bird alerts
+// get alerts
 app.get('/alert', async (req, res) => {
+    // validate email- used by createAlert() and searchAlerts()
+    const validate = validator.validate(req.headers.email);
+    if (validate == false) {
+        console.log('Failed email validation');
+        res.send({validate: 'fail'});
+        return;
+    }
+
     const {data, error} = await supabase.from('alerts')
     .select('id, email, location_id, interval')
     .eq('email', `${req.headers.email}`);
@@ -37,7 +40,7 @@ app.get('/alert', async (req, res) => {
     }
 });
 
-// delete rare bird alerts
+// delete alerts
 app.delete('/alert', async (req, res) => {
     const {data, error} = await supabase
     .from('alerts')
@@ -54,7 +57,7 @@ app.delete('/alert', async (req, res) => {
     }
 });
 
-// post rare bird alerts
+// post alerts
 app.post('/alert', async (req, res) => {
     console.log('Add alert request');
     console.log('Request:', req.body);
@@ -83,6 +86,11 @@ app.post('/alert', async (req, res) => {
         res.send(data);
     }
     res.send(req.body);
+});
+
+// get rare bird alert page
+app.get('/', (req, res) => {
+    res.sendFile('public/rareBirdAlert.html', {root: __dirname});
 });
 
 app.get('/manageAlerts', (req, res) => {

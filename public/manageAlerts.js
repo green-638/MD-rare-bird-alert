@@ -10,7 +10,7 @@ async function searchAlerts() {
     const email = document.getElementById('searchEmail').value;
     const validate = validateInput(email);
     if (validate) {
-        return false;
+        return;
     }
     else {
         // reset table
@@ -19,6 +19,7 @@ async function searchAlerts() {
             while (table.firstChild) {
                 table.removeChild(table.firstChild);
             }
+            document.getElementById('manageAlertsTable').style.visibility = 'hidden';
         }
 
         await fetch('/alert', {
@@ -28,6 +29,17 @@ async function searchAlerts() {
         })
         .then((response) => response.json())
         .then((responseJson) => {
+
+            if (responseJson['validate'] == 'fail') {
+                alert('Email has invalid format or does not exist');
+                return;
+            };
+
+            if (responseJson.length == 0) {
+                alert('No results');
+                return;
+            }
+
             responseJson.forEach((alert) => {
                 const row = document.createElement('tr');
 

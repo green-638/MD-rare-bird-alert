@@ -39,6 +39,8 @@
 }
 
 .deleteButton {
+    position: absolute;
+    margin-left: -30px;
     color: red;
     font-size: 18px;
     background-color: transparent;
@@ -47,5 +49,4 @@
 
 .deleteButton:hover {
     font-weight: 800;
-    position: absolute;
 }
