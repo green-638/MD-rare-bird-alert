@@ -27,9 +27,9 @@ async function validateKey() {
 }
 
 function validateInput(userInput) {
-    var validation_regex = /[\d!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/;
+    var validation_regex = /[!@#$%^&*()_+=\[\]{};':"\\|,.<>\/?]+/;
     if (validation_regex.test(userInput)) {
-        alert("Please enter characters A-Z");
+        alert("Please enter allowed characters");
         return true;
     };
 }
