@@ -12,7 +12,7 @@
 }
 
 #manageAlertsTable {
-    width: 50%;
+    width: 40%;
     margin: 0 auto;
     text-align: left;
     padding: 12px;
@@ -27,14 +27,13 @@
 }
 
 #emailCol {
-    width: 30%;
+    width: 50%;
 }
 
 #locationCol {
-    width: 55%;
+    width: 30%;
 }
 
 #intervalCol {
-    width: 15%;
+    width: 20%;
 }
-

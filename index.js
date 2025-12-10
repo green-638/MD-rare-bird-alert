@@ -23,7 +23,9 @@ app.get('/', (req, res) => {
 
 // get rare bird alerts
 app.get('/alert', async (req, res) => {
-    const {data, error} = await supabase.from('alerts').select();
+    const {data, error} = await supabase.from('alerts')
+    .select('email, location_id, interval')
+    .eq('email', `${req.headers.email}`);
 
     if (error) {
         console.log(`Error ${error}`);
