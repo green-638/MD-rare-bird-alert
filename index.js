@@ -3,6 +3,8 @@ const bodyParser = require('body-parser');
 const supabaseClient = require('@supabase/supabase-js');
 const dotenv = require('dotenv');
 const validator = require("email-validator");
+const nodemailer = require('nodemailer');
+const cron = require('node-cron');
 
 const app = express();
 const port = 3000;
@@ -15,6 +17,93 @@ app.use(express.static(__dirname + '/public'));
 const supabaseUrl = process.env.SUPABASE_URL;
 const supabaseKey = process.env.SUPABASE_KEY;
 const supabase = supabaseClient.createClient(supabaseUrl, supabaseKey);
+
+// configure emailer
+const transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: "rarebirdnotifier@gmail.com",
+    pass: process.env.GOOGLE_APP_PASSWORD,
+  },
+});
+
+// find alerts to be sent
+// every 5 sec (make 0 0 0 * * * for midnight)
+cron.schedule('10 54 17 * * *', () => {
+    // initialize tasks array, wipes tasks from previous day
+    const tasks = [];
+    getRows()
+    .then((response) => {
+        allRows = response;
+        // iterate through rows
+        for (row in allRows) {
+            // get current date
+            const date = new Date();
+            // get alert date
+            const alertDate = new Date(allRows[row]['alert_date']);
+            // add row to matches array if alert date is today
+            
+            if (date.getMonth() == alertDate.getMonth() &
+            date.getDate() == alertDate.getDate() &
+            date.getFullYear() == alertDate.getFullYear()) {
+                const hours = alertDate.getHours();
+                const minutes = alertDate.getMinutes();
+                const seconds = alertDate.getSeconds();
+       
+                // add task to tasks array
+                tasks.push(cron.schedule(`${seconds} ${minutes} ${hours} * * *`, () => {
+                    sendEmail(allRows[row]['email'], allRows[row]['location_id'], allRows[row]['interval']);
+                }));
+                // set next alert date
+                alertDate.setDate(alertDate.getDate() + Number(allRows[row]['interval']));
+                // push change to DB
+            }
+        }
+    })
+});
+
+// get all rows
+async function getRows() {
+    const {data, error} = await supabase.from('alerts')
+    .select()
+
+    if (error) {
+        console.log(`Error ${error}`);
+        res.statusCode = 500;
+    }
+    else {
+        return data;
+    }
+}
+
+let myHeaders = new Headers();
+let requestOptions = {};
+requestOptions.method = 'GET';
+requestOptions.redirect = 'follow';
+myHeaders.append("X-eBirdApiToken", process.env.EBIRD_KEY);
+requestOptions.headers = myHeaders;
+
+function getBirds(locId, days) {
+    return fetch(`https://api.ebird.org/v2/data/obs/${locId}/recent/notable?detail=full?back=${days}`,
+        requestOptions)
+    .then((response) => response.json());
+}
+
+// send email
+async function sendEmail(email, locId, days) {
+    const data = getBirds(locId, days);
+    (async () => {
+    const info = await transporter.sendMail({
+        from: '"Rare Bird Alert" <rarebirdnotifiergmail.com>',
+        to: `${email}`,
+        subject: "Rare Bird Alert",
+        text: `${data}`, // plain‑text body
+        html: "<b>Hello world?</b>", // HTML body
+    });
+    console.log("Message sent:", info.messageId);
+    })()
+};
+
 
 // get alerts
 app.get('/alert', async (req, res) => {
@@ -35,7 +124,8 @@ app.get('/alert', async (req, res) => {
         res.statusCode = 500;
         res.send(error);
         return;
-    } else {
+    }
+    else {
         res.send(data);
     }
 });
@@ -52,7 +142,8 @@ app.delete('/alert', async (req, res) => {
         res.statusCode = 500;
         res.send(error);
         return;
-    } else {
+    }
+    else {
         res.send(data);
     }
 });
@@ -82,7 +173,8 @@ app.post('/alert', async (req, res) => {
         res.statusCode = 500;
         res.send(error);
         return;
-    } else {
+    }
+    else {
         res.send(data);
     }
     res.send(req.body);
