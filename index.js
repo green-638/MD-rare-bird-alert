@@ -29,7 +29,8 @@ const transporter = nodemailer.createTransport({
 
 // find alerts to be sent
 // every 5 sec (make 0 0 0 * * * for midnight)
-//cron.schedule('10 54 17 * * *', () => {
+/*
+cron.schedule('10 54 17 * * *', () => {
     // initialize tasks array, wipes tasks from previous day
     const tasks = [];
     getRows()
@@ -61,6 +62,7 @@ const transporter = nodemailer.createTransport({
         }
     })
 });
+*/
 
 // get all rows
 async function getRows() {
