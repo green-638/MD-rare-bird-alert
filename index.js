@@ -160,7 +160,7 @@ app.get('/alert', async (req, res) => {
     }
 
     const {data, error} = await supabase.from('alerts')
-    .select('id, email, location_id, interval')
+    .select('id, email, location_id, interval, alert_date')
     .eq('email', `${req.headers.email}`);
 
     if (error) {

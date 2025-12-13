@@ -72,10 +72,12 @@ async function createAlert() {
                     };
 
                     responseJson.forEach((row) => {
-                        if (row['location_id'] == locId) {
-                            alert('You already have an alert for one of the selected locations. Please select a different location.');
-                            abort = true;
-                            return false;
+                        if (row['location_id'] == locId &
+                            row['interval'] == interval &
+                            row['alert_date'] == date) {
+                                alert('A matching alert was found in the database. Please change your selections.');
+                                abort = true;
+                                return false;
                         }
                     })
                 });
