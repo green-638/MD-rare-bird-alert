@@ -130,7 +130,7 @@ async function populateTable() {
     }
 
     // get reports for each location                 
-    for (loc in locations) {
+    for (let loc in locations) {
         // load reports
         const reports = await loadReports(locations[loc]);
         reports.forEach(report => {

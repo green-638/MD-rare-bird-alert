@@ -84,7 +84,7 @@ document.addEventListener('click', function(click) {
     if (click.target.className == 'deleteButton') {
         let deleteButtons = document.getElementsByClassName('deleteButton');
         let buttonId;
-        for (row in deleteButtons) {
+        for (let row in deleteButtons) {
             if (deleteButtons[row].contains(click.target) == true) {
                 buttonId = deleteButtons[row].id;
                 break;

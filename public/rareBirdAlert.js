@@ -31,9 +31,9 @@ async function createAlert() {
     const checkboxes = [countyCheckboxes.children, hotspotCheckboxes.children];
 
     // iterate through locations
-    for (locType in checkboxes) {
+    for (let locType in checkboxes) {
         const locations = checkboxes[locType];
-        for (loc in locations) {
+        for (let loc in locations) {
             if (locations[loc].nodeName == 'INPUT') {
                 const locId = locations[loc].id.match(/[\w-]+/)[0];
                 let locType;

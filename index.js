@@ -27,17 +27,37 @@ const transporter = nodemailer.createTransport({
   },
 });
 
+// get all rows
+async function getRows() {
+    const {data, error} = await supabase.from('alerts')
+    .select()
+
+    if (error) {
+        console.log(`Error ${error}`);
+        res.statusCode = 500;
+    }
+    else {
+        return data;
+    }
+}
+
+async function updateDate(id, alertDate) {
+    const { error } = await supabase
+    .from('alerts')
+    .update({ alert_date: `${alertDate}` })
+    .eq('id', id);
+}
+
 // find alerts to be sent
-// every 5 sec (make 0 0 0 * * * for midnight)
-/*
-cron.schedule('10 54 17 * * *', () => {
+// 0 0 0 * * * for midnight
+cron.schedule('0 0 0 * * *', () => {
     // initialize tasks array, wipes tasks from previous day
     const tasks = [];
     getRows()
     .then((response) => {
         allRows = response;
         // iterate through rows
-        for (row in allRows) {
+        for (let row in allRows) {
             // get current date
             const date = new Date();
             // get alert date
@@ -58,25 +78,11 @@ cron.schedule('10 54 17 * * *', () => {
                 // set next alert date
                 alertDate.setDate(alertDate.getDate() + Number(allRows[row]['interval']));
                 // push change to DB
+                updateDate(allRows[row]['id'], alertDate);
             }
         }
     })
 });
-*/
-
-// get all rows
-async function getRows() {
-    const {data, error} = await supabase.from('alerts')
-    .select()
-
-    if (error) {
-        console.log(`Error ${error}`);
-        res.statusCode = 500;
-    }
-    else {
-        return data;
-    }
-}
 
 let myHeaders = new Headers();
 let requestOptions = {};
@@ -86,21 +92,57 @@ myHeaders.append("X-eBirdApiToken", process.env.EBIRD_KEY);
 requestOptions.headers = myHeaders;
 
 function getBirds(locId, days) {
-    return fetch(`https://api.ebird.org/v2/data/obs/${locId}/recent/notable?detail=full?back=${days}`,
+    return fetch(`https://api.ebird.org/v2/data/obs/${locId}/recent/notable?detail=full&back=${days}`,
+        requestOptions)
+    .then((response) => response.json());
+}
+
+function getLocName(locId) {
+    return fetch(`https://api.ebird.org/v2/ref/region/info/${locId}`,
         requestOptions)
     .then((response) => response.json());
 }
 
 // send email
 async function sendEmail(email, locId, days) {
-    const data = getBirds(locId, days);
+    const data = await getBirds(locId, days);
+
+    if (data.length == 0) {
+        return;
+    }
+
+    // array of td's
+    let itemsArray = `<tr style="font-weight: bold;">
+    <td>Location<td>
+    <td>Species<td>
+    <td>Quantity<td>
+    <td>Date<td>
+    <td>Checklist<td>
+    <tr>`;
+    data.forEach(row => {
+        let items = '';
+        items += '<td>' + row['locName'] + '<td>';
+        items += '<td>' + row['comName'] + '<td>';
+        items += '<td>' + row['howMany'] + '<td>';
+        items += '<td>' + row['obsDt'] + '<td>';
+        items += '<td>' + `https://ebird.org/checklist/${row['subId']}` + '<td>';
+        
+        itemsArray += '<tr>' + items + '<tr>';
+    });
+
+    // get alert location name
+    let alertLoc = await getLocName(locId);
+    alertLoc = alertLoc['result'];
+    // get current date
+    const today = new Date();
+    const date = `${today.getMonth() + 1}/${today.getDate()}/${today.getFullYear()}`;
+    
     (async () => {
     const info = await transporter.sendMail({
         from: '"Rare Bird Alert" <rarebirdnotifiergmail.com>',
         to: `${email}`,
-        subject: "Rare Bird Alert",
-        text: `${data}`, // plain‑text body
-        html: "<b>Hello world?</b>", // HTML body
+        subject: `${alertLoc} ${date} Rare Bird Alert`,
+        html: `<table>${itemsArray}</table>`,
     });
     console.log("Message sent:", info.messageId);
     })()
