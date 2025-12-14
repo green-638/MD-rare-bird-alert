@@ -49,10 +49,7 @@ async function updateDate(id, alertDate) {
 }
 
 // find alerts to be sent
-// 0 0 0 * * * for midnight
-cron.schedule('0 53 9 * * *', () => {
-    // initialize tasks array, wipes tasks from previous day
-    const tasks = [];
+export function GET(request) {
     getRows()
     .then((response) => {
         allRows = response;
@@ -63,18 +60,12 @@ cron.schedule('0 53 9 * * *', () => {
             // get alert date
             const alertDate = new Date(allRows[row]['alert_date']);
             // add row to matches array if alert date is today
-            
             if (date.getMonth() == alertDate.getMonth() &
             date.getDate() == alertDate.getDate() &
             date.getFullYear() == alertDate.getFullYear()) {
-                const hours = alertDate.getHours();
-                const minutes = alertDate.getMinutes();
-                const seconds = alertDate.getSeconds();
-       
-                // add task to tasks array
-                tasks.push(cron.schedule(`${seconds} ${minutes} ${hours} * * *`, () => {
-                    sendEmail(allRows[row]['email'], allRows[row]['location_id'], allRows[row]['interval']);
-                }));
+        
+                sendEmail(allRows[row]['email'], allRows[row]['location_id'], allRows[row]['interval']);
+  
                 // set next alert date
                 alertDate.setDate(alertDate.getDate() + Number(allRows[row]['interval']));
                 // push change to DB
@@ -82,7 +73,7 @@ cron.schedule('0 53 9 * * *', () => {
             }
         }
     })
-});
+};
 
 let myHeaders = new Headers();
 let requestOptions = {};
