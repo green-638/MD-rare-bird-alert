@@ -1,4 +1,4 @@
-const functions = require('../index');
+//const functions = require('../index');
 
 export function GET(request) {
     return new Response('Hello from Vercel!');
