@@ -3,6 +3,8 @@ const functions = require('../index');
 export function GET() {
     functions.getRows()
     .then((response) => {
+        console.log(response);
+        /*
         allRows = response;
         // iterate through rows
         for (let row in allRows) {
@@ -23,5 +25,6 @@ export function GET() {
                 functions.updateDate(allRows[row]['id'], alertDate);
             }
         }
-    })
+            */
+    });
 };
