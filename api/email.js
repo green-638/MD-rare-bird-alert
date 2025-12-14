@@ -1,4 +1,4 @@
-const functions = require('/index.js');
+const functions = require('../index');
 
 export function GET() {
     functions.getRows()
@@ -15,12 +15,12 @@ export function GET() {
             date.getDate() == alertDate.getDate() &
             date.getFullYear() == alertDate.getFullYear()) {
         
-                sendEmail(allRows[row]['email'], allRows[row]['location_id'], allRows[row]['interval']);
+                functions.sendEmail(allRows[row]['email'], allRows[row]['location_id'], allRows[row]['interval']);
   
                 // set next alert date
                 alertDate.setDate(alertDate.getDate() + Number(allRows[row]['interval']));
                 // push change to DB
-                updateDate(allRows[row]['id'], alertDate);
+                functions.updateDate(allRows[row]['id'], alertDate);
             }
         }
     })
