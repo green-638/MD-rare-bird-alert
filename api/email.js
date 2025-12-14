@@ -1,8 +1,6 @@
 const functions = require('../index');
 
 export function GET(request) {
-    return new Response('Hello from Vercel!');
-    /*
     functions.getRows()
     .then((response) => {
         allRows = response;
@@ -26,5 +24,4 @@ export function GET(request) {
             }
         }
     });
-    */
 }
