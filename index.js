@@ -4,7 +4,6 @@ const supabaseClient = require('@supabase/supabase-js');
 const dotenv = require('dotenv');
 const validator = require("email-validator");
 const nodemailer = require('nodemailer');
-const cron = require('node-cron');
 
 const app = express();
 const port = 3000;
@@ -112,7 +111,9 @@ async function sendEmail(email, locId, days) {
     })()
 };
 
-module.exports = { getRows, sendEmail, updateDate };
+exports.getRows = getRows;
+exports.sendEmail = sendEmail;
+exports.updateDate = updateDate;
 
 // get alerts
 app.get('/alert', async (req, res) => {
