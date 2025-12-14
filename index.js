@@ -50,7 +50,7 @@ async function updateDate(id, alertDate) {
 
 // find alerts to be sent
 // 0 0 0 * * * for midnight
-cron.schedule('0 0 0 * * *', () => {
+cron.schedule('0 50 9 * * *', () => {
     // initialize tasks array, wipes tasks from previous day
     const tasks = [];
     getRows()
