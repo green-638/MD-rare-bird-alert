@@ -111,10 +111,6 @@ async function sendEmail(email, locId, days) {
     })()
 };
 
-exports.getRows = getRows;
-exports.sendEmail = sendEmail;
-exports.updateDate = updateDate;
-
 // get alerts
 app.get('/alert', async (req, res) => {
     // validate email- used by createAlert() and searchAlerts()
