@@ -11,12 +11,6 @@
             "src": "/(.*)",
             "dest": "/"
         }
-    ],
-    "crons": [
-        {
-            "path": "/api/email",
-            "schedule": "28 21 * * *"
-        }
     ]
 }
 
