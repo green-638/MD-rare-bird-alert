@@ -111,8 +111,7 @@ async function sendEmail(email, locId, days) {
     })()
 };
 
-module.exports = app;
-module.exports = {getRows, sendEmail, updateDate};
+module.exports = {getRows};
 
 // get alerts
 app.get('/alert', async (req, res) => {
