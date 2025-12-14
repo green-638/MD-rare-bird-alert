@@ -1,6 +1,6 @@
 const functions = require('../index');
 
-export function GET() {
+export function GET(request) {
     console.log('test');
     /*
     functions.getRows()
