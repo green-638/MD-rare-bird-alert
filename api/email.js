@@ -1,7 +1,7 @@
 const functions = require('../index');
 
 export function GET(request) {
-    console.log('test');
+    return new Response('Hello from Vercel!');
     /*
     functions.getRows()
     .then((response) => {
