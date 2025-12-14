@@ -1,4 +1,4 @@
-const functions = require('/index');
+const functions = require('/index.js');
 
 export function GET() {
     functions.getRows()
