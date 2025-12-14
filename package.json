@@ -1,7 +1,7 @@
 {
   "name": "md-rare-bird-alert",
   "version": "1.0.0",
-  "description": "Receive customer alerts about rare birds in MD through email",
+  "description": "Receive custom alerts about rare birds in MD through email",
   "homepage": "https://github.com/green-638/MD-rare-bird-alert#readme",
   "bugs": {
     "url": "https://github.com/green-638/MD-rare-bird-alert/issues"
