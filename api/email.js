@@ -1,6 +1,6 @@
 const functions = require('../index');
 
-export function GET(request) {
+module.exports = function GET(request) {
     functions.getRows()
     .then((response) => {
         allRows = response;
