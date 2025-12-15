@@ -12,7 +12,7 @@
             "dest": "/"
         },
         {
-            "src": "/^(api.*)",
+            "src": "/(^(api.*))",
             "dest": "/api/email"
         }
     ],
