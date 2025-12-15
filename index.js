@@ -111,7 +111,7 @@ app.get('/api/task', async (req, res) => {
             // get current date
             const today = new Date();
             const date = `${today.getMonth() + 1}/${today.getDate()}/${today.getFullYear()}`;
-            
+
             // send email
             const options = {
                 from: '"Rare Bird Alert" <rarebirdnotifiergmail.com>',
@@ -119,7 +119,9 @@ app.get('/api/task', async (req, res) => {
                 subject: `${alertLoc} ${date} Rare Bird Alert`,
                 html: `<table>${itemsArray}</table>`,
             }
+            console.log(options);
             transporter.sendMail(options, function(error, data) {
+                console.log(transporter);
                 if (error) {
                     console.log(error);
                     res.send(error);
