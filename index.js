@@ -26,27 +26,6 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-// get all rows
-async function getRows() {
-    const {data, error} = await supabase.from('alerts')
-    .select()
-
-    if (error) {
-        console.log(`Error ${error}`);
-        res.statusCode = 500;
-    }
-    else {
-        return data;
-    }
-}
-
-async function updateDate(id, alertDate) {
-    const { error } = await supabase
-    .from('alerts')
-    .update({ alert_date: `${alertDate}` })
-    .eq('id', id);
-}
-
 let myHeaders = new Headers();
 let requestOptions = {};
 requestOptions.method = 'GET';
@@ -117,29 +96,39 @@ async function sendEmail(email, locId, days) {
 };
 
 app.get('/api/task', async (req, res) => {
-    getRows().then((response) => {
-        allRows = response;
-        // iterate through rows
-        for (let row in allRows) {
-            console.log(allRows[row]);
-            // get current date
-            const date = new Date();
-            // get alert date
-            const alertDate = new Date(allRows[row]['alert_date']);
-            // add row to matches array if alert date is today
-            if (date.getMonth() == alertDate.getMonth() &
-            date.getDate() == alertDate.getDate() &
-            date.getFullYear() == alertDate.getFullYear()) {
-                console.log(allRows[row]['location_id']);
-                sendEmail(allRows[row]['email'], allRows[row]['location_id'], allRows[row]['interval']);
-  
-                // set next alert date
-                alertDate.setDate(alertDate.getDate() + Number(allRows[row]['interval']));
-                // push change to DB
-                updateDate(allRows[row]['id'], alertDate);
-            }
+
+    const {data, error} = await supabase.from('alerts')
+    .select();
+
+    if (error) {
+        console.log(`Error ${error}`);
+        res.statusCode = 500;
+        res.send('task failed');
+    }
+    
+    for (row in data) {
+        console.log(allRows[row]);
+        // get current date
+        const date = new Date();
+        // get alert date
+        const alertDate = new Date(allRows[row]['alert_date']);
+        // add row to matches array if alert date is today
+        if (date.getMonth() == alertDate.getMonth() &
+        date.getDate() == alertDate.getDate() &
+        date.getFullYear() == alertDate.getFullYear()) {
+
+            console.log(allRows[row]['location_id']);
+            sendEmail(allRows[row]['email'], allRows[row]['location_id'], allRows[row]['interval']);
+
+            // set next alert date
+            alertDate.setDate(alertDate.getDate() + Number(allRows[row]['interval']));
+            // push change to DB
+            const { error } = await supabase
+            .from('alerts')
+            .update({ alert_date: `${alertDate}` })
+            .eq('id', allRows[row]['id']);
         }
-    });
+    }
     res.send('task completed');
 });
 // delete
@@ -175,7 +164,7 @@ app.delete('/alert', async (req, res) => {
     const {data, error} = await supabase
     .from('alerts')
     .delete()
-    .eq('id', `${req.body.id}`)
+    .eq('id', `${req.body.id}`);
 
     if (error) {
         console.log(`Error ${error}`);
@@ -217,7 +206,6 @@ app.post('/alert', async (req, res) => {
     else {
         res.send(data);
     }
-    res.send(req.body);
 });
 
 // get rare bird alert page
