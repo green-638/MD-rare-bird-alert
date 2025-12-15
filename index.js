@@ -205,7 +205,6 @@ app.get('/aboutProject', (req, res) => {
     res.sendFile('public/aboutProject.html', {root: __dirname});
 });
 
-
 app.listen(port, () => {
     console.log('listening on', port);
 });
