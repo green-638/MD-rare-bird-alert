@@ -79,6 +79,7 @@ app.get('/api/task', async (req, res) => {
             if (Object.keys(reports).length == 0) {
                 continue;
             }
+            console.log('reports: ',reports);
 
             // array of td's beginning with column names
             let itemsArray = `<tr style="font-weight: bold;">
@@ -90,6 +91,7 @@ app.get('/api/task', async (req, res) => {
             <tr>`;
             // build new rows
             reports.forEach(row => {
+                console.log('rows: ',row);
                 let items = '';
                 items += '<td>' + row['locName'] + '<td>';
                 items += '<td>' + row['comName'] + '<td>';
@@ -111,7 +113,7 @@ app.get('/api/task', async (req, res) => {
             // get current date
             const today = new Date();
             const date = `${today.getMonth() + 1}/${today.getDate()}/${today.getFullYear()}`;
-
+            console.log('alert loc: ',alertLoc);
             // send email
             const options = {
                 from: '"Rare Bird Alert" <rarebirdnotifiergmail.com>',
