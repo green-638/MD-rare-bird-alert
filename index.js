@@ -120,7 +120,7 @@ app.get('/api/task', async (req, res) => {
     let t;
     getRows()
     .then((response) => {
-        t = response;
+        t = 'testing';
         allRows = response;
         // iterate through rows
         for (let row in allRows) {
