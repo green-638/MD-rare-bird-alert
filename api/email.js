@@ -1,11 +1,5 @@
 const functions = require('../index');
 
-export default {
-  fetch(request) {
-    return new Response('Hello from Vercel!');
-  },
-};
-/*
 export function GET(request) {
     functions.getRows()
     .then((response) => {
@@ -32,4 +26,4 @@ export function GET(request) {
     });
     
 }
-    */
+    
