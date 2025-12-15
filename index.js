@@ -107,26 +107,26 @@ app.get('/api/task', async (req, res) => {
     }
     
     for (row in data) {
-        console.log(allRows[row]);
+        console.log(data[row]);
         // get current date
         const date = new Date();
         // get alert date
-        const alertDate = new Date(allRows[row]['alert_date']);
+        const alertDate = new Date(data[row]['alert_date']);
         // add row to matches array if alert date is today
         if (date.getMonth() == alertDate.getMonth() &
         date.getDate() == alertDate.getDate() &
         date.getFullYear() == alertDate.getFullYear()) {
 
-            console.log(allRows[row]['location_id']);
-            sendEmail(allRows[row]['email'], allRows[row]['location_id'], allRows[row]['interval']);
+            console.log(data[row]['location_id']);
+            sendEmail(data[row]['email'], data[row]['location_id'], data[row]['interval']);
 
             // set next alert date
-            alertDate.setDate(alertDate.getDate() + Number(allRows[row]['interval']));
+            alertDate.setDate(alertDate.getDate() + Number(data[row]['interval']));
             // push change to DB
             const { error } = await supabase
             .from('alerts')
             .update({ alert_date: `${alertDate}` })
-            .eq('id', allRows[row]['id']);
+            .eq('id', data[row]['id']);
         }
     }
     res.send('task completed');
