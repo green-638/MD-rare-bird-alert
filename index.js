@@ -57,7 +57,6 @@ app.get('/api/task', async (req, res) => {
     }
     // for each alert
     for (row in data) {
-        console.log(data[row]);
         // get current date
         const date = new Date();
         // get alert date
@@ -66,12 +65,19 @@ app.get('/api/task', async (req, res) => {
         if (date.getMonth() == alertDate.getMonth() &
         date.getDate() == alertDate.getDate() &
         date.getFullYear() == alertDate.getFullYear()) {
+            
+            // set next alert date
+            alertDate.setDate(alertDate.getDate() + Number(data[row]['interval']));
+            // push date change to DB
+            const { error } = await supabase
+            .from('alerts')
+            .update({ alert_date: `${alertDate}` })
+            .eq('id', data[row]['id']);
 
-            console.log(data[row]['location_id']);
             // get reports from alert location during interval
             const reports = await getReports(data[row]['location_id'], data[row]['interval']);
             if (reports.length == 0) {
-                return;
+                continue;
             }
 
             // array of td's beginning with column names
@@ -109,20 +115,12 @@ app.get('/api/task', async (req, res) => {
             (async () => {
             const info = await transporter.sendMail({
                 from: '"Rare Bird Alert" <rarebirdnotifiergmail.com>',
-                to: `${email}`,
+                to: `${data[row]['email']}`,
                 subject: `${alertLoc} ${date} Rare Bird Alert`,
                 html: `<table>${itemsArray}</table>`,
             });
             console.log("Message sent:", info.messageId);
             })()
-
-            // set next alert date
-            alertDate.setDate(alertDate.getDate() + Number(data[row]['interval']));
-            // push change to DB
-            const { error } = await supabase
-            .from('alerts')
-            .update({ alert_date: `${alertDate}` })
-            .eq('id', data[row]['id']);
         }
     }
     res.send('task completed');
