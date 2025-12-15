@@ -65,7 +65,7 @@ app.get('/api/task', async (req, res) => {
         if (date.getMonth() == alertDate.getMonth() &
         date.getDate() == alertDate.getDate() &
         date.getFullYear() == alertDate.getFullYear()) {
-            
+
             // set next alert date
             alertDate.setDate(alertDate.getDate() + Number(data[row]['interval']));
             // push date change to DB
@@ -79,7 +79,7 @@ app.get('/api/task', async (req, res) => {
             if (reports.length == 0) {
                 continue;
             }
-
+            console.log(data[row]['location_id']);
             // array of td's beginning with column names
             let itemsArray = `<tr style="font-weight: bold;">
             <td>Location<td>
