@@ -76,7 +76,6 @@ app.get('/api/task', async (req, res) => {
 
             // get reports from alert location during interval
             const reports = await getReports(data[row]['location_id'], data[row]['interval']);
-            console.log(reports);
             if (Object.keys(reports).length == 0) {
                 continue;
             }
@@ -122,6 +121,7 @@ app.get('/api/task', async (req, res) => {
             });
             console.log("Message sent:", info.messageId);
             })()
+            console.log('sent message');
         }
     }
     res.send('task completed');
