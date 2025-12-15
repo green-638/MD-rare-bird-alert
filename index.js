@@ -76,10 +76,11 @@ app.get('/api/task', async (req, res) => {
 
             // get reports from alert location during interval
             const reports = await getReports(data[row]['location_id'], data[row]['interval']);
-            if (reports.length == 0) {
+            console.log(reports);
+            if (Object.keys(reports).length == 0) {
                 continue;
             }
-            console.log(data[row]['location_id']);
+
             // array of td's beginning with column names
             let itemsArray = `<tr style="font-weight: bold;">
             <td>Location<td>
