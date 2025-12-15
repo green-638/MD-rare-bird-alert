@@ -33,7 +33,7 @@ requestOptions.redirect = 'follow';
 myHeaders.append("X-eBirdApiToken", process.env.EBIRD_KEY);
 requestOptions.headers = myHeaders;
 
-function getBirds(locId, days) {
+function getReports(locId, days) {
     return fetch(`https://api.ebird.org/v2/data/obs/${locId}/recent/notable?detail=full&back=${days}`,
         requestOptions)
     .then((response) => response.json());
@@ -45,58 +45,8 @@ function getLocName(locId) {
     .then((response) => response.json());
 }
 
-// send email
-async function sendEmail(email, locId, days) {
-    const data = await getBirds(locId, days);
-
-    if (data.length == 0) {
-        return;
-    }
-
-    // array of td's
-    let itemsArray = `<tr style="font-weight: bold;">
-    <td>Location<td>
-    <td>Species<td>
-    <td>Quantity<td>
-    <td>Date<td>
-    <td>Checklist<td>
-    <tr>`;
-    data.forEach(row => {
-        let items = '';
-        items += '<td>' + row['locName'] + '<td>';
-        items += '<td>' + row['comName'] + '<td>';
-        if (row['howMany'] == 'undefined') {
-            items += '<td>' + 'X' + '<td>';
-        }
-        else {
-            items += '<td>' + row['howMany'] + '<td>';
-        }
-        items += '<td>' + row['obsDt'] + '<td>';
-        items += '<td>' + `https://ebird.org/checklist/${row['subId']}` + '<td>';
-        
-        itemsArray += '<tr>' + items + '<tr>';
-    });
-
-    // get alert location name
-    let alertLoc = await getLocName(locId);
-    alertLoc = alertLoc['result'];
-    // get current date
-    const today = new Date();
-    const date = `${today.getMonth() + 1}/${today.getDate()}/${today.getFullYear()}`;
-    
-    (async () => {
-    const info = await transporter.sendMail({
-        from: '"Rare Bird Alert" <rarebirdnotifiergmail.com>',
-        to: `${email}`,
-        subject: `${alertLoc} ${date} Rare Bird Alert`,
-        html: `<table>${itemsArray}</table>`,
-    });
-    console.log("Message sent:", info.messageId);
-    })()
-};
-
 app.get('/api/task', async (req, res) => {
-
+    // get all alerts
     const {data, error} = await supabase.from('alerts')
     .select();
 
@@ -105,7 +55,7 @@ app.get('/api/task', async (req, res) => {
         res.statusCode = 500;
         res.send('task failed');
     }
-    
+    // for each alert
     for (row in data) {
         console.log(data[row]);
         // get current date
@@ -118,8 +68,54 @@ app.get('/api/task', async (req, res) => {
         date.getFullYear() == alertDate.getFullYear()) {
 
             console.log(data[row]['location_id']);
-            sendEmail(data[row]['email'], data[row]['location_id'], data[row]['interval']);
-            console.log('after sendEmail');
+            // get reports from alert location during interval
+            const reports = await getReports(data[row]['location_id'], data[row]['interval']);
+            if (reports.length == 0) {
+                return;
+            }
+
+            // array of td's beginning with column names
+            let itemsArray = `<tr style="font-weight: bold;">
+            <td>Location<td>
+            <td>Species<td>
+            <td>Quantity<td>
+            <td>Date<td>
+            <td>Checklist<td>
+            <tr>`;
+            // build new rows
+            reports.forEach(row => {
+                let items = '';
+                items += '<td>' + row['locName'] + '<td>';
+                items += '<td>' + row['comName'] + '<td>';
+                if (row['howMany'] == 'undefined') {
+                    items += '<td>' + 'X' + '<td>';
+                }
+                else {
+                    items += '<td>' + row['howMany'] + '<td>';
+                }
+                items += '<td>' + row['obsDt'] + '<td>';
+                items += '<td>' + `https://ebird.org/checklist/${row['subId']}` + '<td>';
+                
+                itemsArray += '<tr>' + items + '<tr>';
+            });
+
+            // get alert location name
+            let alertLoc = await getLocName(data[row]['location_id']);
+            alertLoc = alertLoc['result'];
+            // get current date
+            const today = new Date();
+            const date = `${today.getMonth() + 1}/${today.getDate()}/${today.getFullYear()}`;
+            // send email
+            (async () => {
+            const info = await transporter.sendMail({
+                from: '"Rare Bird Alert" <rarebirdnotifiergmail.com>',
+                to: `${email}`,
+                subject: `${alertLoc} ${date} Rare Bird Alert`,
+                html: `<table>${itemsArray}</table>`,
+            });
+            console.log("Message sent:", info.messageId);
+            })()
+
             // set next alert date
             alertDate.setDate(alertDate.getDate() + Number(data[row]['interval']));
             // push change to DB
