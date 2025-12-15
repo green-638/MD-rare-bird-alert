@@ -116,13 +116,12 @@ async function sendEmail(email, locId, days) {
     })()
 };
 
-app.get('/api/task', (req, res) => {
+app.get('/api/task', async (req, res) => {
     getRows()
     .then((response) => {
         allRows = response;
         // iterate through rows
         for (let row in allRows) {
-            console.log(allRows[row]);
             // get current date
             const date = new Date();
             // get alert date
