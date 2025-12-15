@@ -81,7 +81,6 @@ app.get('/api/task', async (req, res) => {
             <tr>`;
             // build new rows
             reports.forEach(row => {
-                console.log('rows: ',row);
                 let items = '';
                 items += '<td>' + row['locName'] + '<td>';
                 items += '<td>' + row['comName'] + '<td>';
@@ -106,11 +105,11 @@ app.get('/api/task', async (req, res) => {
      
             // configure email transporter
             const transporter = nodemailer.createTransport({
-            service: "gmail",
-            auth: {
-                user: "rarebirdnotifier@gmail.com",
-                pass: process.env.GOOGLE_APP_PASSWORD,
-            },
+                service: "gmail",
+                auth: {
+                    user: "rarebirdnotifier@gmail.com",
+                    pass: process.env.GOOGLE_APP_PASSWORD,
+                },
             });
             // configure email info
             const options = {
@@ -120,8 +119,8 @@ app.get('/api/task', async (req, res) => {
                 html: `<table>${itemsArray}</table>`,
             }
             // send email
+            //console.log(transporter);
             transporter.sendMail(options, function(error, data) {
-                console.log(transporter);
                 if (error) {
                     console.log(error);
                     res.send(error);
