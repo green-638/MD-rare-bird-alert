@@ -138,8 +138,8 @@ app.get('/api/task', async (req, res) => {
                 updateDate(allRows[row]['id'], alertDate);
             }
         }
+        res.send('task completed');
     });
-    res.send('task completed');
 });
 // delete
 module.exports = app;
