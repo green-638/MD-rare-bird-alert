@@ -119,15 +119,17 @@ app.get('/api/task', async (req, res) => {
                 html: `<table>${itemsArray}</table>`
             }
             // send email
-            console.log(transporter);
-            transporter.sendMail(options, function(error, data) {
-                if (error) {
-                    console.log(error);
-                    res.send(error);
-                }
-                else {
-                    console.log('Message sent: ', data.response);
-                }
+            await new Promise((resolve, reject) => {
+                transporter.sendMail(options, function(error, data) {
+                    if (error) {
+                        console.log(error);
+                        reject(error);
+                    }
+                    else {
+                        console.log('Message sent: ', data.response);
+                        resolve(data);
+                    }
+                });
             });
         }
     }
