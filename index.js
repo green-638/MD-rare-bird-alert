@@ -122,6 +122,7 @@ app.get('/api/task', (req, res) => {
         allRows = response;
         // iterate through rows
         for (let row in allRows) {
+            console.log(allRows[row]);
             // get current date
             const date = new Date();
             // get alert date

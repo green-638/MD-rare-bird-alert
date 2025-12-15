@@ -16,10 +16,6 @@
         {
             "path": "/api/task",
             "schedule": "0 5 * * *"
-        },
-        {
-            "path": "/api/task",
-            "schedule": "0 7 * * *"
         }
     ]
 }
