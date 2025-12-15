@@ -17,15 +17,6 @@ const supabaseUrl = process.env.SUPABASE_URL;
 const supabaseKey = process.env.SUPABASE_KEY;
 const supabase = supabaseClient.createClient(supabaseUrl, supabaseKey);
 
-// configure emailer
-const transporter = nodemailer.createTransport({
-  service: "gmail",
-  auth: {
-    user: "rarebirdnotifier@gmail.com",
-    pass: process.env.GOOGLE_APP_PASSWORD,
-  },
-});
-
 let myHeaders = new Headers();
 let requestOptions = {};
 requestOptions.method = 'GET';
@@ -79,7 +70,6 @@ app.get('/api/task', async (req, res) => {
             if (Object.keys(reports).length == 0) {
                 continue;
             }
-            console.log('reports: ',reports);
 
             // array of td's beginning with column names
             let itemsArray = `<tr style="font-weight: bold;">
@@ -113,15 +103,23 @@ app.get('/api/task', async (req, res) => {
             // get current date
             const today = new Date();
             const date = `${today.getMonth() + 1}/${today.getDate()}/${today.getFullYear()}`;
-            console.log('alert loc: ',alertLoc);
-            // send email
+     
+            // configure email transporter
+            const transporter = nodemailer.createTransport({
+            service: "gmail",
+            auth: {
+                user: "rarebirdnotifier@gmail.com",
+                pass: process.env.GOOGLE_APP_PASSWORD,
+            },
+            });
+            // configure email info
             const options = {
                 from: '"Rare Bird Alert" <rarebirdnotifiergmail.com>',
                 to: `${data[row]['email']}`,
                 subject: `${alertLoc} ${date} Rare Bird Alert`,
                 html: `<table>${itemsArray}</table>`,
             }
-            console.log(options);
+            // send email
             transporter.sendMail(options, function(error, data) {
                 console.log(transporter);
                 if (error) {
