@@ -117,10 +117,7 @@ async function sendEmail(email, locId, days) {
 };
 
 app.get('/api/task', async (req, res) => {
-    let t = 5;
-    getRows()
-    .then((response) => {
-        t += 5;
+    getRows().then((response) => {
         allRows = response;
         // iterate through rows
         for (let row in allRows) {
@@ -142,7 +139,7 @@ app.get('/api/task', async (req, res) => {
             }
         }
     });
-    res.send(`${t}`);
+    res.send('task completed');
 });
 // delete
 module.exports = app;
