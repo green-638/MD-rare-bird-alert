@@ -8,8 +8,12 @@
     ],
     "routes": [
         {
-            "src": "/(.*)",
+            "src": "/(^((?!api).)*)",
             "dest": "/"
+        },
+        {
+            "src": "/^(api.*)",
+            "dest": "/api/email"
         }
     ],
     "crons": [
