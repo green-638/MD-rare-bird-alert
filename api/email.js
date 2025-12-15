@@ -1,7 +1,8 @@
-const functions = require('../index');
-export function GET(request) {
-  return new Response('Hello from Vercel!');
-}
+const app = require('../index');
+
+app.get('/api/email', (req, res) => {
+  res.send('Hello Vercel!');
+});
 /*
 export function GET(request) {
     console.log('ran task');
@@ -28,7 +29,6 @@ export function GET(request) {
             }
         }
     });
-    
 }
     */
     

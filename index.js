@@ -86,7 +86,12 @@ async function sendEmail(email, locId, days) {
         let items = '';
         items += '<td>' + row['locName'] + '<td>';
         items += '<td>' + row['comName'] + '<td>';
-        items += '<td>' + row['howMany'] + '<td>';
+        if (row['howMany'] == 'undefined') {
+            items += '<td>' + 'X' + '<td>';
+        }
+        else {
+            items += '<td>' + row['howMany'] + '<td>';
+        }
         items += '<td>' + row['obsDt'] + '<td>';
         items += '<td>' + `https://ebird.org/checklist/${row['subId']}` + '<td>';
         
@@ -111,6 +116,33 @@ async function sendEmail(email, locId, days) {
     })()
 };
 
+app.get('/task', (req, res) => {
+    getRows()
+    .then((response) => {
+        allRows = response;
+        // iterate through rows
+        for (let row in allRows) {
+            // get current date
+            const date = new Date();
+            // get alert date
+            const alertDate = new Date(allRows[row]['alert_date']);
+            // add row to matches array if alert date is today
+            if (date.getMonth() == alertDate.getMonth() &
+            date.getDate() == alertDate.getDate() &
+            date.getFullYear() == alertDate.getFullYear()) {
+
+                sendEmail(allRows[row]['email'], allRows[row]['location_id'], allRows[row]['interval']);
+  
+                // set next alert date
+                alertDate.setDate(alertDate.getDate() + Number(allRows[row]['interval']));
+                // push change to DB
+                updateDate(allRows[row]['id'], alertDate);
+            }
+        }
+    });
+    res.send('task(s) completed');
+});
+// delete
 module.exports = app;
 
 // get alerts
