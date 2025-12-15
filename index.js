@@ -117,10 +117,10 @@ async function sendEmail(email, locId, days) {
 };
 
 app.get('/api/task', async (req, res) => {
-    let t;
+    let t = 5;
     getRows()
     .then((response) => {
-        t = 'testing';
+        t += 5;
         allRows = response;
         // iterate through rows
         for (let row in allRows) {
