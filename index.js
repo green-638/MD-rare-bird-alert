@@ -17,6 +17,7 @@ const supabaseUrl = process.env.SUPABASE_URL;
 const supabaseKey = process.env.SUPABASE_KEY;
 const supabase = supabaseClient.createClient(supabaseUrl, supabaseKey);
 
+// initialize headers for eBird API
 let myHeaders = new Headers();
 let requestOptions = {};
 requestOptions.method = 'GET';
@@ -24,18 +25,21 @@ requestOptions.redirect = 'follow';
 myHeaders.append("X-eBirdApiToken", process.env.EBIRD_KEY);
 requestOptions.headers = myHeaders;
 
+// get recent rare bird reports by location and time period
 function getReports(locId, days) {
     return fetch(`https://api.ebird.org/v2/data/obs/${locId}/recent/notable?detail=full&back=${days}`,
         requestOptions)
     .then((response) => response.json());
 }
 
+// get a location ID's name
 function getLocName(locId) {
     return fetch(`https://api.ebird.org/v2/ref/region/info/${locId}`,
         requestOptions)
     .then((response) => response.json());
 }
 
+// get alerts from DB, send emails- called by cron
 app.get('/api/task', async (req, res) => {
     // get all alerts
     const {data, error} = await supabase.from('alerts')
@@ -52,7 +56,7 @@ app.get('/api/task', async (req, res) => {
         const date = new Date();
         // get alert date
         const alertDate = new Date(data[row]['alert_date']);
-        // add row to matches array if alert date is today
+        // continue if alert's date matches today's date
         if (date.getMonth() == alertDate.getMonth() &
         date.getDate() == alertDate.getDate() &
         date.getFullYear() == alertDate.getFullYear()) {
@@ -71,7 +75,16 @@ app.get('/api/task', async (req, res) => {
                 continue;
             }
 
-            // array of td's beginning with column names
+            // email
+            // configure email transporter
+            const transporter = nodemailer.createTransport({
+                service: "gmail",
+                auth: {
+                    user: "rarebirdnotifier@gmail.com",
+                    pass: process.env.GOOGLE_APP_PASSWORD
+                }
+            });
+            // build table to hold eBird data
             let itemsArray = `<tr style="font-weight: bold;">
             <td>Location<td>
             <td>Species<td>
@@ -95,7 +108,6 @@ app.get('/api/task', async (req, res) => {
                 
                 itemsArray += '<tr>' + items + '<tr>';
             });
-
             // get alert location name
             let alertLoc = await getLocName(data[row]['location_id']);
             alertLoc = alertLoc['result'];
@@ -103,14 +115,6 @@ app.get('/api/task', async (req, res) => {
             const today = new Date();
             const date = `${today.getMonth() + 1}/${today.getDate()}/${today.getFullYear()}`;
      
-            // configure email transporter
-            const transporter = nodemailer.createTransport({
-                service: "gmail",
-                auth: {
-                    user: "rarebirdnotifier@gmail.com",
-                    pass: process.env.GOOGLE_APP_PASSWORD
-                }
-            });
             // configure email info
             const options = {
                 from: '"Rare Bird Alert" <rarebirdnotifiergmail.com>',
@@ -133,12 +137,10 @@ app.get('/api/task', async (req, res) => {
             });
         }
     }
-    res.send('task completed');
+    res.send('Task completed');
 });
-// delete
-module.exports = app;
 
-// get alerts
+// get alerts from DB using email
 app.get('/alert', async (req, res) => {
     // validate email- used by createAlert() and searchAlerts()
     const validate = validator.validate(req.headers.email);
@@ -163,7 +165,7 @@ app.get('/alert', async (req, res) => {
     }
 });
 
-// delete alerts
+// delete alerts from DB
 app.delete('/alert', async (req, res) => {
     const {data, error} = await supabase
     .from('alerts')
@@ -181,7 +183,7 @@ app.delete('/alert', async (req, res) => {
     }
 });
 
-// post alerts
+// post alerts to DB
 app.post('/alert', async (req, res) => {
     console.log('Add alert request');
     console.log('Request:', req.body);
@@ -212,7 +214,7 @@ app.post('/alert', async (req, res) => {
     }
 });
 
-// get rare bird alert page
+// routing
 app.get('/', (req, res) => {
     res.sendFile('public/rareBirdAlert.html', {root: __dirname});
 });
