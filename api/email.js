@@ -1,5 +1,8 @@
 const functions = require('../index');
-
+export function GET(request) {
+  return new Response('Hello from Vercel!');
+}
+/*
 export function GET(request) {
     console.log('ran task');
     functions.getRows()
@@ -27,4 +30,5 @@ export function GET(request) {
     });
     
 }
+    */
     
