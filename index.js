@@ -108,18 +108,18 @@ app.get('/api/task', async (req, res) => {
                 service: "gmail",
                 auth: {
                     user: "rarebirdnotifier@gmail.com",
-                    pass: process.env.GOOGLE_APP_PASSWORD,
-                },
+                    pass: process.env.GOOGLE_APP_PASSWORD
+                }
             });
             // configure email info
             const options = {
                 from: '"Rare Bird Alert" <rarebirdnotifiergmail.com>',
                 to: `${data[row]['email']}`,
                 subject: `${alertLoc} ${date} Rare Bird Alert`,
-                html: `<table>${itemsArray}</table>`,
+                html: `<table>${itemsArray}</table>`
             }
             // send email
-            //console.log(transporter);
+            console.log(transporter);
             transporter.sendMail(options, function(error, data) {
                 if (error) {
                     console.log(error);
