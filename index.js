@@ -121,6 +121,7 @@ app.get('/api/task', async (req, res) => {
         allRows = response;
         // iterate through rows
         for (let row in allRows) {
+            console.log(allRows[row]);
             // get current date
             const date = new Date();
             // get alert date
@@ -129,7 +130,7 @@ app.get('/api/task', async (req, res) => {
             if (date.getMonth() == alertDate.getMonth() &
             date.getDate() == alertDate.getDate() &
             date.getFullYear() == alertDate.getFullYear()) {
-
+                console.log(allRows[row]['location_id']);
                 sendEmail(allRows[row]['email'], allRows[row]['location_id'], allRows[row]['interval']);
   
                 // set next alert date
