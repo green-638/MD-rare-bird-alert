@@ -119,7 +119,7 @@ app.get('/api/task', async (req, res) => {
 
             console.log(data[row]['location_id']);
             sendEmail(data[row]['email'], data[row]['location_id'], data[row]['interval']);
-
+            console.log('after sendEmail');
             // set next alert date
             alertDate.setDate(alertDate.getDate() + Number(data[row]['interval']));
             // push change to DB
