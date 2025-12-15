@@ -116,7 +116,7 @@ async function sendEmail(email, locId, days) {
     })()
 };
 
-app.get('/task', (req, res) => {
+app.get('/api/task', (req, res) => {
     getRows()
     .then((response) => {
         allRows = response;
