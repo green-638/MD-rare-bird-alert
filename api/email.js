@@ -1,6 +1,7 @@
 const functions = require('../index');
 
 export function GET(request) {
+    console.log('ran task');
     functions.getRows()
     .then((response) => {
         allRows = response;
