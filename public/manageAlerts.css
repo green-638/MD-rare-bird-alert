@@ -1,8 +1,17 @@
+body {
+  background-image: linear-gradient(rgba(132, 132, 132, 0.241), #4b5d49ad),
+  url("./img/IMG_2003-Enhanced-NR.jpg");
+  background-size: cover;
+  background-repeat: no-repeat;
+  height: 100%;
+}
+
 #searchAlertsSection {
     width: 50%;
     margin: 0 auto;
     margin-top: 100px;
     text-align: center;
+    text-shadow: 1.5px 1.5px rgb(100, 100, 100);
 }
 
 #manageAlertsTitle {
