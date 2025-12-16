@@ -1,7 +1,7 @@
 document.getElementById('countyCheckboxes').style.visibility = 'hidden';
 document.getElementById('hotspotCheckboxes').style.visibility = 'hidden';
 
-// hide data page's county checkboxes when click off 
+// hide county checkboxes when click elsewhere
 window.addEventListener('click', function(click){
     if (document.getElementById('countyCheckboxes').contains(click.target) == false &
     document.getElementById('filterCounty').contains(click.target) == false &
@@ -10,6 +10,7 @@ window.addEventListener('click', function(click){
     }
 });
 
+// hide hotspot checkboxes when click elsewhere
 window.addEventListener('click', function(click){
     if (document.getElementById('hotspotCheckboxes').contains(click.target) == false &
     document.getElementById('filterHotspot').contains(click.target) == false &
@@ -18,26 +19,33 @@ window.addEventListener('click', function(click){
     }
 });
 
+// prevent form submission from refreshing page
 const form = document.querySelector('form');
 form.addEventListener('submit', (event) => {
     event.preventDefault();
 });
 
+// create alert using form information
 async function createAlert() {
+    // remove unchecked boxes
     removeUnchecked('county');
     removeUnchecked('hotspot');
+    // get checked boxes and append them to array
     const countyCheckboxes = document.getElementById('countyCheckboxes');
     const hotspotCheckboxes = document.getElementById('hotspotCheckboxes');
     const checkboxes = [countyCheckboxes.children, hotspotCheckboxes.children];
 
-    // iterate through locations
+    // iterate through all locations
     for (let locType in checkboxes) {
+        // get locations in current location type
         const locations = checkboxes[locType];
+        // iterate through locations
         for (let loc in locations) {
             if (locations[loc].nodeName == 'INPUT') {
+                // matches location ID, ignores hotspots' county IDs
                 const locId = locations[loc].id.match(/[\w-]+/)[0];
                 let locType;
-                // hotspot IDs begin with L, counties begin with US
+                // determine location type- hotspot IDs begin with 'L', counties begin with 'US'
                 if (locId.slice(0,1) == 'L') {
                     locType = 'hotspot';
                 }
@@ -55,7 +63,8 @@ async function createAlert() {
                 date.setMinutes(Number(timeInput.slice(3, 5)));
                 date.setSeconds(0,0);
 
-                // prevent duplicate alerts
+                // get alerts from DB
+                // email validation and duplicate alert prevention
                 let abort = false;
                 await fetch('/alert', {
                     headers: {
@@ -64,13 +73,13 @@ async function createAlert() {
                 })
                 .then((response) => response.json())
                 .then((responseJson) => {
-                    // validate email
+                    // email validation
                     if (responseJson['validate'] == 'fail') {
                         alert('Email has invalid format or does not exist');
                         abort = true;
                         return;
                     };
-
+                    // iterate through rows and find alerts matching form input
                     responseJson.forEach((row) => {
                         if (row['location_id'] == locId &
                             row['interval'] == interval &
@@ -86,6 +95,7 @@ async function createAlert() {
                     return false;
                 }
      
+                // post form input to DB
                 await fetch(`/alert`, {
                     method: 'POST',
                     body: JSON.stringify({

@@ -2,7 +2,7 @@ document.getElementById('countyCheckboxes').style.visibility = 'hidden';
 document.getElementById('hotspotCheckboxes').style.visibility = 'hidden';
 document.getElementById('dataTable').style.visibility = 'hidden';
 
-// hide data page's county checkboxes when click off 
+// hide county checkboxes when click elsewhere
 window.addEventListener('click', function(click){
     if (document.getElementById('countyCheckboxes').contains(click.target) == false &
     document.getElementById('filterCounty').contains(click.target) == false &
@@ -11,6 +11,7 @@ window.addEventListener('click', function(click){
     }
 });
 
+// hide hotspot checkboxes when click elsewhere
 window.addEventListener('click', function(click){
     if (document.getElementById('hotspotCheckboxes').contains(click.target) == false &
     document.getElementById('filterHotspot').contains(click.target) == false &
@@ -19,45 +20,41 @@ window.addEventListener('click', function(click){
     }
 });
 
-
+// load recent rare bird reports w/ location ID
 function loadReports(locationId) {
     return fetch(`https://api.ebird.org/v2/data/obs/${locationId}/recent/notable?detail=full`,
         requestOptions)
     .then((response) => response.json());
 }
 
-
-/* validate input start & end date/time
-must be within last 30 days and end date after start date */
+/* validate start & end date/time
+dates must be within last 30 days and end date must be after start date */
 function validateSearchDate() {
-    // get current date 
     const currentDate = new Date();
-    // create new date obj 
     let oldDate = new Date();
     // set old date to 30 days ago 
     oldDate.setDate(currentDate.getDate() - 30);
 
-    // get user input start date and time, create start date object
-    let inputStartDate = document.getElementById('startDate').value;
-    let inputStartTime = document.getElementById('startTime').value;
-    const inputStartDateObj = new Date(`${inputStartDate} ${inputStartTime}`);
+    // get start date and time, create start date object
+    let startDate = document.getElementById('startDate').value;
+    let startTime = document.getElementById('startTime').value;
+    const startDateObj = new Date(`${startDate} ${startTime}`);
     
-    // get user input end date and time, create end date object
-    let inputEndDate = document.getElementById('endDate').value;
-    let inputEndTime = document.getElementById('endTime').value;
-    const inputEndDateObj = new Date(`${inputEndDate} ${inputEndTime}`);
+    // get end date and time, create end date object
+    let endDate = document.getElementById('endDate').value;
+    let endTime = document.getElementById('endTime').value;
+    const endDateObj = new Date(`${endDate} ${endTime}`);
 
     // date and time validation 
-    if (inputStartDateObj.getTime() < oldDate.getTime() |
-    inputStartDateObj.getTime() > currentDate.getTime() |
-    inputEndDateObj.getTime() < oldDate.getTime() |
-    inputEndDateObj.getTime() > currentDate.getTime() |
-    inputStartDateObj.getTime() > inputEndDateObj.getTime()) {
+    if (startDateObj.getTime() < oldDate.getTime() |
+    startDateObj.getTime() > currentDate.getTime() |
+    endDateObj.getTime() < oldDate.getTime() |
+    endDateObj.getTime() > currentDate.getTime() |
+    startDateObj.getTime() > endDateObj.getTime()) {
         alert(`Please select a date between ${oldDate} and ${currentDate}`);
         return 'alert';
     }
 }
-
 
 // add reports to search results table
 async function populateTable() {
@@ -79,6 +76,7 @@ async function populateTable() {
     // validate date and time 
     const dateValidate = validateSearchDate();
     if (dateValidate == 'alert') {
+        document.getElementById('dataTable').style.visibility = 'hidden';
         return false;
     }
 
@@ -87,19 +85,20 @@ async function populateTable() {
 
     // store selected hotspots
     const selectHotspots = [];
+    // get search results from previous searches
     const hotspotSearchResults = hotspotCheckboxes.children;
-    // loop through checkboxes
+    // save search results from previous searches
     for (let result = 0; result < hotspotSearchResults.length; result++) {
         const checkbox = hotspotSearchResults[result];
         // check if checkbox is ticked
         if (checkbox.nodeName == 'INPUT' & checkbox.checked == true) {
-            // select hotspot id
+            // select hotspot ID & ignore its county ID, 
             hotspotId = checkbox.id.match(/^\w+/)[0];
             selectHotspots.push(hotspotId);
         }
     }
 
-    // verify >=1 location selected 
+    // verify >=1 location of any type selected 
     if (selectCounties.length == 0 & selectHotspots.length == 0) {
         alert('Please select at least location');
         return false;
@@ -113,9 +112,10 @@ async function populateTable() {
     let checklistCount = 0;
     const speciesCount = {};
 
+    // assign locations to variable for iteration
     let locations;
     if (selectCounties.length > 0) {
-        // if selected both
+        // if selected counties and hotspots
         if (selectHotspots.length > 0) {
             locations = selectCounties.concat(selectHotspots);
         } 
@@ -129,19 +129,20 @@ async function populateTable() {
         locations = selectHotspots;
     }
 
-    // get reports for each location                 
+    // get reports for each location and display results in table
+    //iterate through locations         
     for (let loc in locations) {
-        // load reports
+        // load reports using location
         const reports = await loadReports(locations[loc]);
         reports.forEach(report => {
-            // if report date/time meet criteria
+            // if report date/time meet search criteria
             if (report['obsDt'] >= startDate & report['obsDt'] <= endDate) {
-                // create new row
+                // new row
                 const newRow = document.createElement('tr');
-                // create species column
+                // species 
                 const speciesCol = document.createElement('td');
                 speciesCol.innerHTML = report['comName'];
-                // create species quantity column
+                // species quantity
                 const quantityCol = document.createElement('td');
                 if (report['howMany'] == undefined) {
                     quantityCol.innerHTML = 'X';
@@ -149,19 +150,19 @@ async function populateTable() {
                 else {
                     quantityCol.innerHTML = report['howMany'];
                 }
-                // create county name column
+                // county 
                 const countyCol = document.createElement('td');
                 countyCol.innerHTML = report['subnational2Name'];
-                // create hotspot name column
+                // hotspot
                 const hotspotCol = document.createElement('td');
                 hotspotCol.innerHTML = report['locName'];
-                // create date column
+                // date
                 const dateCol = document.createElement('td');
                 dateCol.innerHTML = report['obsDt'].match(/^[\d-]+/);
-                // create time column
+                // time 
                 const timeCol = document.createElement('td');
                 timeCol.innerHTML = report['obsDt'].match(/[\d:]+$/);
-                // create checklist link column
+                // checklist link 
                 const linkCol = document.createElement('td');
                 const link = document.createElement('a');
                 link.innerHTML = 'Link';
@@ -169,26 +170,27 @@ async function populateTable() {
                 link.target = '_blank';
                 linkCol.appendChild(link);
                 
-                // loop through rows to find matching records
+                // loop through rows to find matching rows
                 const columns = [speciesCol, quantityCol, countyCol, hotspotCol, dateCol, timeCol, linkCol];
                 let match = false;
                 for (let rowNum=0; rowNum<tableBody.rows.length; rowNum++) {
                     const row = tableBody.rows[rowNum];
-                    // if matching record exists- same species, hotspot, date
+                    // if matching row exists- same species, hotspot, date
                     if (speciesCol.innerHTML == row.cells[0].innerHTML &
                         hotspotCol.innerHTML == row.cells[3].innerHTML &
                         dateCol.innerHTML == row.cells[4].innerHTML) {
                         match = true;
-                        // then replace with newer matching record
+                        // replace matching row with new row
                         if (dateCol.innerHTML > row.cells[4].innerHTML &
                             timeCol.innerHTML > row.cells[5].innerHTML) {
                             row.cells[4].innerHTML = dateCol;
                             row.cells[5].innerHTML = timeCol;
                             row.cells[6].innerHTML = linkCol;
                         }
+                    break;
                     }
                 }
-                // add new record if no match
+                // add new row if no match
                 if (match == false) {
                     // append columns to new row
                     for (let col=0; col<7; col++) {
@@ -225,6 +227,9 @@ async function populateTable() {
     const summaryTitle = document.createElement('h2');
     summaryTitle.innerHTML = 'Data summary';
     dataSummary.appendChild(summaryTitle);
+    const desc = document.createElement('h3');
+    desc.innerHTML = '# of checklists w/ species';
+    dataSummary.appendChild(desc);
     const numOfChecklists = document.createElement('p');
     numOfChecklists.innerHTML = `Checklist count: ${checklistCount}`;
     dataSummary.appendChild(numOfChecklists);

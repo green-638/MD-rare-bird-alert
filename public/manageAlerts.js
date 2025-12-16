@@ -1,85 +1,84 @@
 document.getElementById('manageAlertsTable').style.visibility = 'hidden';
 
+// prevent form submission from refreshing page
 const form = document.querySelector('form');
 form.addEventListener('submit', (event) => {
     event.preventDefault();
 });
 
+// get alerts by email, display them by table
 async function searchAlerts() {
-    // validate email input
-    const email = document.getElementById('searchEmail').value;
-    const validate = validateInput(email);
-    if (validate) {
-        return;
-    }
-    else {
-        // reset table
-        const table = document.getElementById('tableBody');
-        if (table.hasChildNodes() == true) {
-            while (table.firstChild) {
-                table.removeChild(table.firstChild);
-            }
-            document.getElementById('manageAlertsTable').style.visibility = 'hidden';
+    // reset table
+    const table = document.getElementById('tableBody');
+    if (table.hasChildNodes() == true) {
+        while (table.firstChild) {
+            table.removeChild(table.firstChild);
         }
-
-        await fetch('/alert', {
-            headers: {
-                email: document.getElementById('searchEmail').value,
-            },
-        })
-        .then((response) => response.json())
-        .then((responseJson) => {
-            // validate email
-            if (responseJson['validate'] == 'fail') {
-                alert('Email has invalid format or does not exist');
-                return;
-            };
-
-            if (responseJson.length == 0) {
-                alert('No results');
-                return;
-            }
-
-            responseJson.forEach((alert) => {
-                const row = document.createElement('tr');
-
-                const email = document.createElement('td');
-                email.innerHTML = alert['email'];
-
-                const location = document.createElement('td');
-                const link = document.createElement('a');
-                if (alert['location_type'] == 'county') {
-                    link.href = `https://ebird.org/region/${alert['location_id']}`;
-                }
-                else {
-                    link.href = `https://ebird.org/hotspot/${alert['location_id']}`;
-                }
-                link.innerHTML = `${alert['location_id']}`;
-                link.target = '_blank';
-                location.appendChild(link);
-
-                const interval = document.createElement('td');
-                interval.innerHTML = alert['interval'];
-
-                const holdButton = document.createElement('td');
-                const deleteButton = document.createElement('button');
-                deleteButton.innerHTML = 'X';
-                deleteButton.id = alert['id'];
-                deleteButton.className = 'deleteButton';
-                holdButton.appendChild(deleteButton);
-
-                row.appendChild(email);
-                row.appendChild(location);
-                row.appendChild(interval);
-                row.appendChild(deleteButton);
-
-                table.appendChild(row);
-            })
-            document.getElementById('manageAlertsTable').style.visibility = 'visible';
-        });
+        document.getElementById('manageAlertsTable').style.visibility = 'hidden';
     }
+    // get alerts
+    await fetch('/alert', {
+        headers: {
+            email: document.getElementById('searchEmail').value,
+        },
+    })
+    .then((response) => response.json())
+    .then((responseJson) => {
+        // validate email
+        if (responseJson['validate'] == 'fail') {
+            alert('Email has invalid format or does not exist');
+            return;
+        };
+
+        if (responseJson.length == 0) {
+            alert('No results');
+            return;
+        }
+        // add rows to table for each alert
+        responseJson.forEach((alert) => {
+            const row = document.createElement('tr');
+
+            // email
+            const email = document.createElement('td');
+            email.innerHTML = alert['email'];
+
+            // location ID w/ link
+            const location = document.createElement('td');
+            const link = document.createElement('a');
+            if (alert['location_type'] == 'county') {
+                link.href = `https://ebird.org/region/${alert['location_id']}`;
+            }
+            else {
+                link.href = `https://ebird.org/hotspot/${alert['location_id']}`;
+            }
+            link.innerHTML = `${alert['location_id']}`;
+            link.target = '_blank';
+            location.appendChild(link);
+
+            // interval
+            const interval = document.createElement('td');
+            interval.innerHTML = alert['interval'];
+
+            // delete button
+            const holdButton = document.createElement('td');
+            const deleteButton = document.createElement('button');
+            deleteButton.innerHTML = 'X';
+            deleteButton.id = alert['id'];
+            deleteButton.className = 'deleteButton';
+            holdButton.appendChild(deleteButton);
+
+            row.appendChild(email);
+            row.appendChild(location);
+            row.appendChild(interval);
+            row.appendChild(deleteButton);
+
+            table.appendChild(row);
+        })
+        document.getElementById('manageAlertsTable').style.visibility = 'visible';
+    });
 }
 
+// listen for delete button click, delete row using its respective button
 document.addEventListener('click', function(click) {
     if (click.target.className == 'deleteButton') {
         let deleteButtons = document.getElementsByClassName('deleteButton');
@@ -95,6 +94,7 @@ document.addEventListener('click', function(click) {
     }
 });
 
+// delete row using button ID 
 async function deleteRow(buttonId) {
     await fetch('/alert', {
         method: 'DELETE',
