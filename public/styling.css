@@ -4,14 +4,14 @@ body {
     font-family: monospace;
 }
 
-button, input[type="submit"] {
+button {
     font-family: monospace;
     background-color: white;
     border-radius: 25px;
     border: none
 }
 
-button:hover, input[type="submit"]:hover {
+button:hover {
     background-color: rgb(207, 207, 207);
 }
 
@@ -57,10 +57,10 @@ button:hover, input[type="submit"]:hover {
     text-align: center;
 }
 
-#apiHelpHomepage, #apiHelpDataPage {
+#apiHelpAlertPage, #apiHelpDataPage, #dataCredit {
     a:link {
-        color: rgb(255, 255, 255);
-        text-decoration: none;
+        color: rgb(255, 244, 244);
+        text-shadow: none;
     }
 
     a:visited {

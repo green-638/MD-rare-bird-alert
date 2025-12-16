@@ -64,14 +64,13 @@ async function createAlert() {
                     locType = 'county';
                 }
 
-                const timeInput = document.getElementById('alertTime').value;
                 const interval = document.getElementById('interval').value;
                 let date = new Date();
 
                 // set next alert date
                 date.setDate(date.getDate() + Number(interval)); 
-                date.setHours(Number(timeInput.slice(0, 2)));
-                date.setMinutes(Number(timeInput.slice(3, 5)));
+                date.setHours(0);
+                date.setMinutes(0);
                 date.setSeconds(0,0);
 
                 // get alerts from DB

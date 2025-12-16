@@ -1,5 +1,5 @@
 body {
-    background-color: #5e7d56;
+    background-image: linear-gradient(#709c65, #607d9a);
 }
 
 #helpInfo {
@@ -17,22 +17,18 @@ body {
     }
 
     a:link {
-        color: white;
-        text-decoration: none;
+        color: rgb(255, 255, 255);
+        text-shadow: none;
         font-size: 14px;
     }
 
     a:visited {
-        color: white;
+        color: rgb(255, 255, 255);
         text-decoration: none;
     }
 
     a:hover {
-        color: rgb(173, 243, 255);
-    }
-
-    .helpSectionTitle {
-        font-size: 18px;
+    color: rgb(173, 243, 255);
     }
 }
 

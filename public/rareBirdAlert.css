@@ -8,9 +8,8 @@ body {
     font-size: 14px;
 }
 
-input[type="submit"] {
-    width: 100px;
-    height: 30px;
+button {
+    width: 60px;
 }
 
 #alertFormSection {
@@ -36,10 +35,6 @@ input[type="submit"] {
         width: 180px;
         margin-left: 210px;
     }
-    
-    button {
-        width: 60px;
-    }
 
     p {
        display: inline-block;
@@ -49,7 +44,7 @@ input[type="submit"] {
     }
 }
 
-#apiHelpHomepage {
+#apiHelpAlertPage {
     text-align: right;
     margin-right: 210px;
     margin-top: 5px;

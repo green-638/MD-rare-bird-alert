@@ -73,20 +73,6 @@ body {
 #dataCredit {
     margin: 0 auto;
     text-align: center;
-
-    a:link {
-        color: white;
-        text-decoration: none;
-    }
-
-    a:visited {
-        color: white;
-        text-decoration: none;
-    }
-
-    a:hover {
-        color: rgb(173, 243, 255);
-    }
 }
 
 #countyCheckboxes {

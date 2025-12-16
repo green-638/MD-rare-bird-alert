@@ -1,3 +1,22 @@
+window.addEventListener('mouseover', function(click) {
+    if (document.getElementsByClassName('button').contains(click.target) == true) {
+        const button = click.target;
+        const granimInstance = new Granim({
+            element: button,
+            name: 'granim',
+            opacity: [1, 1],
+            states : {
+                "default-state": {
+                    gradients: [
+                        ['#834D9B', '#D04ED6'],
+                        ['#1CD8D2', '#93EDC7']
+                    ]
+                }
+            }
+            });
+    }
+});
+
 // create headers & request options for eBird API
 let myHeaders = new Headers();
 let ebirdapitoken;

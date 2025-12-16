@@ -34,13 +34,17 @@
         <label for="apiKey">API key: </label>
         <div class="alertInput">
           <input type="text" id="apiKey" required />
-          <button type="button" id="validateKeyButton" onclick="validateKey()">
+          <button
+            type="button"
+            id="validateKeyButton"
+            onclick="validateKey()"
+          >
             Enter
           </button>
           <p id="keyValidationStatus"></p>
         </div>
         <!-- api key help -->
-        <div id="apiHelpHomePage">
+        <div id="apiHelpAlertPage">
           <a href="help.html">Need an API key?</a>
         </div>
         <br />
@@ -88,7 +92,7 @@
           </div>
         </div>
         <div id="alertSubmit">
-          <input type="submit" value="Submit" />
+          <button type="submit">Submit</button>
         </div>
       </form>
     </div>
