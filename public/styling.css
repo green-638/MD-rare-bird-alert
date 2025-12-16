@@ -1,7 +1,19 @@
 body {
-    background-color: #063759;
+    background-image: linear-gradient(rgb(113, 196, 255), rgb(160, 215, 255));
+    height: 100%;
     color: white;
     font-family: monospace;
+}
+
+button, input[type="submit"] {
+    font-family: monospace;
+    background-color: white;
+    border-radius: 25px;
+    border: none
+}
+
+button:hover, input[type="submit"]:hover {
+    background-color: rgb(207, 207, 207);
 }
 
 #siteName {
@@ -11,6 +23,9 @@ body {
 
 #nav {
     float: right;
+    font-size: 14px;
+    font-weight: 500;
+    text-shadow: 1.5px 1.5px rgb(100, 100, 100);
 
     li {
         display: inline-block;
@@ -44,12 +59,12 @@ body {
 
 #apiHelpHomepage, #apiHelpDataPage {
     a:link {
-        color: rgb(214, 214, 214);
+        color: rgb(255, 255, 255);
         text-decoration: none;
     }
 
     a:visited {
-        color: rgb(214, 214, 214);
+        color: rgb(255, 255, 255);
         text-decoration: none;
     }
 

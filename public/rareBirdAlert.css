@@ -1,3 +1,19 @@
+body {
+    background-image: linear-gradient(rgba(132, 132, 132, 0.241), #4b5d49ad),
+    url("./img/IMG_0492.jpg");
+    background-size: cover;
+    background-repeat: no-repeat;
+    height: 100%;
+    color: rgb(255, 255, 255);
+    text-shadow: 1.5px 1.5px rgb(100, 100, 100);
+    font-size: 14px;
+}
+
+input[type="submit"] {
+    width: 100px;
+    height: 30px;
+}
+
 #alertFormSection {
     /* center form */
     width: 600px;
@@ -74,9 +90,10 @@
 }
 
 #alertSubmit {
-    width: 60px;
+    width: 100%;
     margin: 0 auto;
     margin-top: 10px;
+    text-align: center;
 }
 
 #countyCheckboxes,  #hotspotCheckboxes {

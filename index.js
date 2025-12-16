@@ -216,6 +216,10 @@ app.post('/alert', async (req, res) => {
 
 // routing
 app.get('/', (req, res) => {
+    res.sendFile('public/home.html', {root: __dirname});
+});
+
+app.get('/rareBirdAlert', (req, res) => {
     res.sendFile('public/rareBirdAlert.html', {root: __dirname});
 });
 
