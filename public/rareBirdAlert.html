@@ -74,10 +74,9 @@
           selected
         </p>
         <!-- email frequency -->
-        <fieldset id="frequency">
-          <legend>Frequency:</legend>
-          <div id="alertTimeInput">
-            <label for="interval">Days: </label>
+        <div id="intervalSection">
+          <label for="interval">Frequency (days): </label>
+          <div class="alertInput">
             <input
               type="number"
               id="interval"
@@ -85,12 +84,8 @@
               name="interval"
               required
             />
-            <label for="alertTime">Alert time: </label>
-            <input type="time" id="alertTime" name="alertTime" required />
           </div>
-          <!-- add logic to verify at least 1 value submitted -->
-          <!-- must be <= 30 days. cant get data any older -->
-        </fieldset>
+        </div>
         <div id="alertSubmit">
           <input type="submit" value="Submit" />
         </div>

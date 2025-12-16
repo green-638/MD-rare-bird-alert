@@ -32,7 +32,7 @@ body {
     position: absolute;
     text-wrap-mode: wrap;
     width: 240px;
-    margin-left: 560px;
+    margin-left: 480px;
     font-size: 10px;
 }
 
@@ -50,7 +50,7 @@ body {
 }
 
 #countyCheckboxes,  #hotspotCheckboxes {
-    margin-top: -80px;
+    margin-top: -100px;
     padding: 10px;
     position: absolute;
     z-index: 1;
@@ -70,18 +70,37 @@ body {
     }
 }
 
+#dataCredit {
+    margin: 0 auto;
+    text-align: center;
+
+    a:link {
+        color: white;
+        text-decoration: none;
+    }
+
+    a:visited {
+        color: white;
+        text-decoration: none;
+    }
+
+    a:hover {
+        color: rgb(173, 243, 255);
+    }
+}
+
 #countyCheckboxes {
     width: 170px;
-    margin-left: 245px;
+    margin-left: 235px;
 }
 
 #hotspotCheckboxes {
     width: 320px;
-    margin-left: 510px;
+    margin-left: 500px;
 }
 
 #timeInput {
-    margin-left: 653px;
+    margin-left: 638px;
     margin-top: 10px;
 }
 

@@ -66,27 +66,8 @@ input[type="submit"] {
     font-size: 10px;
 }
 
-#alertTimeInput {
-    text-align: center;
-}
-
-#frequency {
-    margin-top: 20px;
-    border: 0;
-
-    legend {
-        margin-left: 85px;
-        margin-bottom: 5px;
-    }
-
-    label {
-        display: inline-block;
-        margin-left: 0;
-    }
-}
-
-#days, #hours {
-    width: 70px;
+#intervalSection {
+    margin-top: 25px;
 }
 
 #alertSubmit {
