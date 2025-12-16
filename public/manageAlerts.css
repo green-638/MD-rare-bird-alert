@@ -23,6 +23,7 @@ body {
 #manageAlertsTable {
     width: 40%;
     margin: 0 auto;
+    margin-top: 100px;
     text-align: left;
     padding: 12px;
     border: 1px solid black;

@@ -1,5 +1,16 @@
 document.getElementById('manageAlertsTable').style.visibility = 'hidden';
 
+const search = document.getElementById('searchAlertsSection');
+window.onload = function() {
+    anime({
+        targets: search,
+        opacity: [0, 1],
+        duration: 800, 
+        easing: 'easeInOutQuad', 
+        delay: 100,
+    });
+}
+
 // prevent form submission from refreshing page
 const form = document.querySelector('form');
 form.addEventListener('submit', (event) => {
@@ -75,6 +86,13 @@ async function searchAlerts() {
             table.appendChild(row);
         })
         document.getElementById('manageAlertsTable').style.visibility = 'visible';
+        anime({
+            targets: document.getElementById('manageAlertsTable'),
+            opacity: [0, 1],
+            duration: 600, 
+            easing: 'easeInOutQuad', 
+            translateY: '-80px'
+        });
     });
 }
 

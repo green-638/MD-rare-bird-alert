@@ -24,7 +24,7 @@ body {
 }
 
 #apiHelpDataPage {
-    margin-left: 200px;
+    margin-left: 180px;
     font-size: 12;
 }
 
@@ -124,8 +124,7 @@ body {
     
     #dataTable {
         width: 80%;
-        margin-top: 30px;
-        margin-bottom: 100px;
+        margin-top: 130px;
         margin-left: 300px;
         padding: 12px;
         border: 1px solid black;

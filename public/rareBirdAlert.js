@@ -1,6 +1,17 @@
 document.getElementById('countyCheckboxes').style.visibility = 'hidden';
 document.getElementById('hotspotCheckboxes').style.visibility = 'hidden';
 
+const alertForm = document.getElementById('alertFormSection');
+window.onload = function() {
+    anime({
+        targets: alertForm,
+        opacity: [0, 1],
+        duration: 800, 
+        easing: 'easeInOutQuad', 
+        delay: 100,
+    });
+}
+
 // hide county checkboxes when click elsewhere
 window.addEventListener('click', function(click){
     if (document.getElementById('countyCheckboxes').contains(click.target) == false &

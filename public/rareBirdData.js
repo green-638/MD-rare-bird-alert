@@ -2,6 +2,18 @@ document.getElementById('countyCheckboxes').style.visibility = 'hidden';
 document.getElementById('hotspotCheckboxes').style.visibility = 'hidden';
 document.getElementById('dataTable').style.visibility = 'hidden';
 
+const dataSearch = document.getElementById('dataSearchSection');
+const dataCredit = document.getElementById('dataCredit');
+window.onload = function() {
+    anime({
+        targets: [dataSearch, dataCredit],
+        opacity: [0, 1],
+        duration: 800, 
+        easing: 'easeInOutQuad', 
+        delay: 100,
+    });
+}
+
 // hide county checkboxes when click elsewhere
 window.addEventListener('click', function(click){
     if (document.getElementById('countyCheckboxes').contains(click.target) == false &
@@ -216,6 +228,13 @@ async function populateTable() {
     if (tableBody.hasChildNodes()) {
         // unhide data table
         document.getElementById('dataTable').style.visibility = 'visible';
+        anime({
+            targets: document.getElementById('dataTable'),
+            opacity: [0, 1],
+            duration: 600, 
+            easing: 'easeInOutQuad', 
+            translateY: '-100px'
+        });
     }
     else {
         alert('No checklists met the search criteria');
@@ -239,4 +258,11 @@ async function populateTable() {
         numOfSpecies.innerHTML = `${species}: ${speciesCount[species]}`;
         dataSummary.appendChild(numOfSpecies);
     }
+    anime({
+            targets: dataSummary,
+            opacity: [0, 1],
+            duration: 600, 
+            easing: 'easeInOutQuad', 
+            delay: 100,
+        });
 }
