@@ -115,7 +115,16 @@ document.addEventListener('click', function(click) {
             }
         }
         deleteRow(Number(buttonId));
-        alert('Deletion successful');
+
+        // play audio confirmation
+        const sound = new Howl({
+            src: ['./audio/ding.mp3']
+        });
+        sound.play();
+
+        setTimeout(function() {
+            alert('Deletion successful');
+        }, 1200);
     }
 });
 

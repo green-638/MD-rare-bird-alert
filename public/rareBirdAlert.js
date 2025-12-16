@@ -119,7 +119,16 @@ async function createAlert() {
                         'Content-type': 'application/json',
                     },
                 });
-                alert('Alert creation successful');
+
+                // play audio confirmation
+                const sound = new Howl({
+                    src: ['./audio/ding.mp3']
+                });
+                sound.play();
+
+                setTimeout(function() {
+                    alert('Alert creation successful');
+                }, 1200);
             }
         }
     }
