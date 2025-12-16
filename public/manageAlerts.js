@@ -17,6 +17,7 @@ form.addEventListener('submit', (event) => {
     event.preventDefault();
 });
 
+let tableAnimate;
 // get alerts by email, display them by table
 async function searchAlerts() {
     // reset table
@@ -27,6 +28,12 @@ async function searchAlerts() {
         }
         document.getElementById('manageAlertsTable').style.visibility = 'hidden';
     }
+
+    // reset table animation
+    if (tableAnimate != undefined) {
+        tableAnimate.restart();
+    }
+
     // get alerts
     await fetch('/alert', {
         headers: {
@@ -86,7 +93,7 @@ async function searchAlerts() {
             table.appendChild(row);
         })
         document.getElementById('manageAlertsTable').style.visibility = 'visible';
-        anime({
+        tableAnimate = anime({
             targets: document.getElementById('manageAlertsTable'),
             opacity: [0, 1],
             duration: 600, 

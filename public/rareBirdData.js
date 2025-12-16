@@ -63,33 +63,39 @@ function validateSearchDate() {
     endDateObj.getTime() < oldDate.getTime() |
     endDateObj.getTime() > currentDate.getTime() |
     startDateObj.getTime() > endDateObj.getTime()) {
-        alert(`Please select a date between ${oldDate} and ${currentDate}`);
-        return 'alert';
+        setTimeout(function() {
+            alert(`Please select a date between ${oldDate} and ${currentDate}`);
+        }, 10)
+        return false;
     }
 }
 
+let tableAnimate;
 // add reports to search results table
 async function populateTable() {
-    // reset table
+    document.getElementById('dataTable').style.visibility = 'hidden';
+
+    // reset table and data summary
     const tableBody = document.getElementById('tableBody');
+    const dataSummary = document.getElementById('dataSummary');
     if (tableBody.hasChildNodes() == true) {
         while (tableBody.firstChild) {
             tableBody.removeChild(tableBody.firstChild);
         }
-    }
-    // reset data summary
-    const dataSummary = document.getElementById('dataSummary');
-    if (dataSummary.hasChildNodes() == true) {
         while (dataSummary.firstChild) {
             dataSummary.removeChild(dataSummary.firstChild);
         }
     }
 
+    // reset table animation
+    if (tableAnimate != undefined) {
+        tableAnimate.restart();
+    }
+
     // validate date and time 
     const dateValidate = validateSearchDate();
-    if (dateValidate == 'alert') {
-        document.getElementById('dataTable').style.visibility = 'hidden';
-        return false;
+    if (dateValidate == false) {
+        return;
     }
 
     // update selectedCounties array in sharedScripts.js
@@ -113,7 +119,7 @@ async function populateTable() {
     // verify >=1 location of any type selected 
     if (selectCounties.length == 0 & selectHotspots.length == 0) {
         alert('Please select at least location');
-        return false;
+        return;
     }
 
     // select date and time 
@@ -228,7 +234,7 @@ async function populateTable() {
     if (tableBody.hasChildNodes()) {
         // unhide data table
         document.getElementById('dataTable').style.visibility = 'visible';
-        anime({
+        tableAnimate = anime({
             targets: document.getElementById('dataTable'),
             opacity: [0, 1],
             duration: 600, 
@@ -238,7 +244,7 @@ async function populateTable() {
     }
     else {
         alert('No checklists met the search criteria');
-        return false;
+        return;
     }
     
     
