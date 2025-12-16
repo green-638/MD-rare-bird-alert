@@ -1,6 +1,6 @@
 const welcomeMsg = document.getElementById('welcomeMsg');
 
-window.onload = function() {
+document.addEventListener('DOMContentLoaded', (event) => {
     anime({
         targets: welcomeMsg,
         opacity: [0, 1],
@@ -9,4 +9,5 @@ window.onload = function() {
         delay: 200,
         translateY: '-200px'
     });
-};
+});
+

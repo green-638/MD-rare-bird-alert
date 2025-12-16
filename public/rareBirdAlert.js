@@ -2,7 +2,7 @@ document.getElementById('countyCheckboxes').style.visibility = 'hidden';
 document.getElementById('hotspotCheckboxes').style.visibility = 'hidden';
 
 const alertForm = document.getElementById('alertFormSection');
-window.onload = function() {
+document.addEventListener('DOMContentLoaded', (event) => {
     anime({
         targets: alertForm,
         opacity: [0, 1],
@@ -10,7 +10,7 @@ window.onload = function() {
         easing: 'easeInOutQuad', 
         delay: 100,
     });
-}
+});
 
 // hide county checkboxes when click elsewhere
 window.addEventListener('click', function(click){

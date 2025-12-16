@@ -1,7 +1,7 @@
 document.getElementById('manageAlertsTable').style.visibility = 'hidden';
 
 const search = document.getElementById('searchAlertsSection');
-window.onload = function() {
+document.addEventListener('DOMContentLoaded', (event) => {
     anime({
         targets: search,
         opacity: [0, 1],
@@ -9,7 +9,7 @@ window.onload = function() {
         easing: 'easeInOutQuad', 
         delay: 100,
     });
-}
+});
 
 // prevent form submission from refreshing page
 const form = document.querySelector('form');

@@ -4,7 +4,7 @@ document.getElementById('dataTable').style.visibility = 'hidden';
 
 const dataSearch = document.getElementById('dataSearchSection');
 const dataCredit = document.getElementById('dataCredit');
-window.onload = function() {
+document.addEventListener('DOMContentLoaded', (event) => {
     anime({
         targets: [dataSearch, dataCredit],
         opacity: [0, 1],
@@ -12,7 +12,7 @@ window.onload = function() {
         easing: 'easeInOutQuad', 
         delay: 100,
     });
-}
+});
 
 // hide county checkboxes when click elsewhere
 window.addEventListener('click', function(click){
