@@ -38,7 +38,7 @@
 }
 
 #countyCheckboxes,  #hotspotCheckboxes {
-    margin-top: -70px;
+    margin-top: -80px;
     padding: 10px;
     position: absolute;
     z-index: 1;
@@ -60,12 +60,12 @@
 
 #countyCheckboxes {
     width: 170px;
-    margin-left: 310px;
+    margin-left: 245px;
 }
 
 #hotspotCheckboxes {
     width: 320px;
-    margin-left: 590px;
+    margin-left: 510px;
 }
 
 #timeInput {
