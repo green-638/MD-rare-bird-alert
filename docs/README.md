@@ -20,8 +20,10 @@ dependencies are required:
 - express
 - nodemailer
 - nodemon
-Install each with the following command
 
+<!-- end of list -->
+
+Install each with the following command
 ```
 npm install <dependency>
 ```
