@@ -44,36 +44,63 @@ npm run
 ### API
 
 - GET /api/task
-  Retrieves alerts from the database and sends emails for alerts whose dates match
+
+<!-- end of list -->
+
+Retrieves alerts from the database and sends emails for alerts whose dates match
   the current date. A cron job makes this request daily at 12:00 AM.
 
 - GET /alert
-  Retrieves alerts from the database using the email in the request header.
+
+<!-- end of list -->
+
+Retrieves alerts from the database using the email in the request header.
 
 - DELETE /alert
-  Deletes alerts from the database using the row ID in the request body.
+
+<!-- end of list -->
+
+Deletes alerts from the database using the row ID in the request body.
 
 - POST /alert
-  Posts alerts to the database. The request body contains an email, location ID,
-  location type (county or hotspot), interval (alert frequency), and date (next
-  date that alert should be sent).
+
+<!-- end of list -->
+
+Posts alerts to the database. The request body contains an email, location ID,
+location type (county or hotspot), interval (alert frequency), and date (next
+date that alert should be sent).
 
 #### Routing
 
 - GET /
-  Sends home.html
+
+<!-- end of list -->
+
+Sends home.html
 
 - GET /rareBirdAlert
-  Sends rareBirdAlert.html
+
+<!-- end of list -->
+
+Sends rareBirdAlert.html
 
 - GET /manageAlerts
-  Sends manageAlerts.html
+
+<!-- end of list -->
+  
+Sends manageAlerts.html
 
 - GET /help
-  Sends help.html
+
+<!-- end of list -->
+  
+Sends help.html
 
 - GET /aboutProject
-  Sends aboutProject.html
+
+<!-- end of list -->
+  
+Sends aboutProject.html
 
 ### Bugs and Future Development
 
