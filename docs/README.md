@@ -47,8 +47,8 @@ npm run
 
 <!-- end of list -->
 
-Retrieves alerts from the database and sends emails for alerts whose dates match
-  the current date. A cron job makes this request daily at 12:00 AM.
+Retrieves alerts from the database and sends emails for alerts whose date matches
+the current date. A cron job makes this request daily within an hour after 12:00 AM.
 
 - GET /alert
 
@@ -113,7 +113,7 @@ becomes beneficial, they will be added.
 
 The cron job responsible for sending emails is currently performed by Supabase.
 However, the current tier being used only supports 2 cron jobs, with each being
-permitted 1 task daily. As a result, alerts cannot be customized to be sent at
-any time, so all alerts must be sent at midnight. cron-job.org or another service
+permitted 1 task daily. This means that alerts cannot be customized to be sent at
+any time, and instead must be sent all at once. cron-job.org or another service
 may be used in the future to allow further customization and flexibility in
 creating and sending alerts.
