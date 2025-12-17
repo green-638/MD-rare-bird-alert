@@ -50,7 +50,7 @@ body {
 }
 
 #countyCheckboxes,  #hotspotCheckboxes {
-    margin-top: -100px;
+    margin-top: -105px;
     padding: 10px;
     position: absolute;
     z-index: 1;
