@@ -114,6 +114,7 @@ app.get('/api/task', async (req, res) => {
             // get current date
             const today = new Date();
             const date = `${today.getMonth() + 1}/${today.getDate()}/${today.getFullYear()}`;
+            date.setDate(data.getDate() - 1);
      
             // configure email info
             const options = {
