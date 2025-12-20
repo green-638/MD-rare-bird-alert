@@ -11,12 +11,6 @@
             "src": "/(.*)",
             "dest": "/"
         }
-    ],
-    "crons": [
-        {
-            "path": "/api/task",
-            "schedule": "0 5 * * *"
-        }
     ]
 }
 
