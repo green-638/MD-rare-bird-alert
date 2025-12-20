@@ -93,7 +93,16 @@ app.get('/api/task', async (req, res) => {
             <td>Checklist<td>
             <tr>`;
             // build new rows
+            const reportHistory = [];
             reports.forEach(row => {
+                // skip duplicate reports from same checklist- happens when pics uploaded
+                for (reportItem in reportHistory) {
+                    if (row['subId'] == reportHistory[reportItem][0] &
+                        row['comName'] == reportHistory[reportItem][1]) {
+                        return;
+                    }
+                }
+
                 let items = '';
                 items += '<td>' + row['locName'] + '<td>';
                 items += '<td>' + row['comName'] + '<td>';
@@ -107,14 +116,16 @@ app.get('/api/task', async (req, res) => {
                 items += '<td>' + `https://ebird.org/checklist/${row['subId']}` + '<td>';
                 
                 itemsArray += '<tr>' + items + '<tr>';
+
+                reportHistory.push([row['subId'], row['comName']]);
             });
             // get alert location name
             let alertLoc = await getLocName(data[row]['location_id']);
             alertLoc = alertLoc['result'];
             // get current date
             const today = new Date();
+            today.setDate(today.getDate() - 1);
             const date = `${today.getMonth() + 1}/${today.getDate()}/${today.getFullYear()}`;
-            date.setDate(data.getDate() - 1);
      
             // configure email info
             const options = {

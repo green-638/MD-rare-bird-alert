@@ -147,14 +147,25 @@ async function populateTable() {
         locations = selectHotspots;
     }
 
-    // get reports for each location and display results in table
-    //iterate through locations         
+    // get reports for each location and display results in table      
     for (let loc in locations) {
         // load reports using location
         const reports = await loadReports(locations[loc]);
+        const reportHistory = [];
         reports.forEach(report => {
             // if report date/time meet search criteria
             if (report['obsDt'] >= startDate & report['obsDt'] <= endDate) {
+                // find duplicate reports- happens when upload pics
+                for (reportItem in reportHistory) {
+                    if (
+                        report['subId'] == reportHistory[reportItem][0] &
+                        report['comName'] == reportHistory[reportItem][1]
+                    ) {
+                        return;
+                    }
+                }
+                reportHistory.push([report['subId'], report['comName']])
+              
                 // new row
                 const newRow = document.createElement('tr');
                 // species 
@@ -184,30 +195,35 @@ async function populateTable() {
                 const linkCol = document.createElement('td');
                 const link = document.createElement('a');
                 link.innerHTML = 'Link';
+                link.id = report['subId'];
                 link.href = `https://ebird.org/checklist/${report['subId']}`;
                 link.target = '_blank';
                 linkCol.appendChild(link);
                 
                 // loop through rows to find matching rows
-                const columns = [speciesCol, quantityCol, countyCol, hotspotCol, dateCol, timeCol, linkCol];
                 let match = false;
                 for (let rowNum=0; rowNum<tableBody.rows.length; rowNum++) {
                     const row = tableBody.rows[rowNum];
                     // if matching row exists- same species, hotspot, date
-                    if (speciesCol.innerHTML == row.cells[0].innerHTML &
+                    if (
+                        speciesCol.innerHTML == row.cells[0].innerHTML &
                         hotspotCol.innerHTML == row.cells[3].innerHTML &
-                        dateCol.innerHTML == row.cells[4].innerHTML) {
+                        dateCol.innerHTML == row.cells[4].innerHTML
+                    ) {
                         match = true;
                         // replace matching row with new row
-                        if (dateCol.innerHTML > row.cells[4].innerHTML &
-                            timeCol.innerHTML > row.cells[5].innerHTML) {
+                        if (
+                            dateCol.innerHTML > row.cells[4].innerHTML &
+                            timeCol.innerHTML > row.cells[5].innerHTML 
+                        ) {
                             row.cells[4].innerHTML = dateCol;
                             row.cells[5].innerHTML = timeCol;
-                            row.cells[6].innerHTML = linkCol;
+                            row.cells[6] = linkCol;
                         }
                     break;
                     }
                 }
+                const columns = [speciesCol, quantityCol, countyCol, hotspotCol, dateCol, timeCol, linkCol];
                 // add new row if no match
                 if (match == false) {
                     // append columns to new row
@@ -256,7 +272,7 @@ async function populateTable() {
     desc.innerHTML = '# of checklists w/ species';
     dataSummary.appendChild(desc);
     const numOfChecklists = document.createElement('p');
-    numOfChecklists.innerHTML = `Checklist count: ${checklistCount}`;
+    numOfChecklists.innerHTML = `Total checklist count: ${checklistCount}`;
     dataSummary.appendChild(numOfChecklists);
 
     for (species in speciesCount) {
