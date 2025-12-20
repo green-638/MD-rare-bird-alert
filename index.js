@@ -239,3 +239,155 @@ app.get('/aboutProject', (req, res) => {
 app.listen(port, () => {
     console.log('listening on', port);
 });
+
+
+
+const cronKey = process.env.CRON_KEY;
+function getJobs() {
+    return fetch('https://api.cron-job.org/jobs', {
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${cronKey}`
+        }
+    })
+    .then((response) => response.json());
+}
+
+// replace id
+function jobSchedule (schedule) {
+    let cron;
+    if (schedule == 'hourly') {
+        cron = {hours: [-1]};
+    }
+    else {
+        cron = {hours: [0], minutes: [0]};
+    }
+    
+    return fetch('https://api.cron-job.org/jobs/7044300', {
+        method: 'PATCH',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${cronKey}`
+        },
+        body: JSON.stringify({
+            job: {schedule: cron}
+        })
+    });
+}
+
+app.get('/api/test', async (req, res) => {
+    // change to hourly
+    const hourly = await jobSchedule('hourly');
+
+    // get today's date
+    let today = new Date();
+    today.setDate(today.getDate - 1);
+    const todayStr = today.toString().match(/^[\w\d\s]+[\d]{4}/)[0];
+
+    // get alerts
+    const {data, error} = await supabase.from('alerts')
+    .select();
+
+    if (error) {
+        console.log(`Error ${error}`);
+        res.statusCode = 500;
+        res.send('task failed');
+    }
+
+    // check if have alerts to be sent
+    let match = false;
+    for (row in data) {
+        const alertDate = new Date(data[row]['alert_date']);
+        const alertDateStr = alertDate.toString().match(/^[\w\d\s]+[\d]{4}/)[0];
+        if (alertDateStr == todayStr) {
+            // update date and send email
+            if (alertDate.getHours() == today.getHours()) {
+                // set next alert date
+                alertDate.setDate(alertDate.getDate() + Number(data[row]['interval']));
+
+                // push date change to DB
+                const { error } = await supabase
+                .from('alerts')
+                .update({ alert_date: `${alertDate}` })
+                .eq('id', data[row]['id']);
+
+                // get reports from alert location during interval
+                const reports = await getReports(data[row]['location_id'], data[row]['interval']);
+                if (Object.keys(reports).length == 0) {
+                    continue;
+                }
+
+                // email
+                // configure email transporter
+                const transporter = nodemailer.createTransport({
+                    service: "gmail",
+                    auth: {
+                        user: "rarebirdnotifier@gmail.com",
+                        pass: process.env.GOOGLE_APP_PASSWORD
+                    }
+                });
+
+                // build table to hold eBird data
+                let itemsArray = `<tr style="font-weight: bold;">
+                <td>Location<td>
+                <td>Species<td>
+                <td>Quantity<td>
+                <td>Date<td>
+                <td>Checklist<td>
+                <tr>`;
+
+                // build new rows
+                reports.forEach(row => {
+                    let items = '';
+                    items += '<td>' + row['locName'] + '<td>';
+                    items += '<td>' + row['comName'] + '<td>';
+                    if (row['howMany'] == 'undefined') {
+                        items += '<td>' + 'X' + '<td>';
+                    }
+                    else {
+                        items += '<td>' + row['howMany'] + '<td>';
+                    }
+                    items += '<td>' + row['obsDt'] + '<td>';
+                    items += '<td>' + `https://ebird.org/checklist/${row['subId']}` + '<td>';
+                    
+                    itemsArray += '<tr>' + items + '<tr>';
+                });
+                
+                // get alert location name
+                let alertLoc = await getLocName(data[row]['location_id']);
+                alertLoc = alertLoc['result'];
+                // get current date
+                const date = `${today.getMonth() + 1}/${today.getDate()}/${today.getFullYear()}`;
+        
+                // configure email info
+                const options = {
+                    from: '"Rare Bird Alert" <rarebirdnotifiergmail.com>',
+                    to: `${data[row]['email']}`,
+                    subject: `${alertLoc} ${date} Rare Bird Alert`,
+                    html: `<table>${itemsArray}</table>`
+                }
+                // send email
+                await new Promise((resolve, reject) => {
+                    transporter.sendMail(options, function(error, data) {
+                        if (error) {
+                            console.log(error);
+                            reject(error);
+                        }
+                        else {
+                            console.log('Message sent: ', data.response);
+                            resolve(data);
+                        }
+                    });
+                });
+            }
+            match = true;
+        }
+    }
+
+    if (match == false) {
+        // pause job by changing schedule to 12 AM
+        const pause = await jobSchedule('daily');
+    }
+
+    res.send('Success');
+});
