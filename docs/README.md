@@ -105,7 +105,7 @@ Sends aboutProject.html
 ### Bugs and Future Development
 
 There are currently no known bugs. The website is intended to be viewed on desktop
-browsers and is not optimized for other devices, such as phones and tablets.
+browsers in a fullscreen window and is not optimized for resized windows or other devices, such as phones and tablets.
 Using these devices may reveal unstyled content.
 
 Currently, only locations in Maryland are supported. If supporting other states
