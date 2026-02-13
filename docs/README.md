@@ -111,9 +111,4 @@ Using these devices may reveal unstyled content.
 Currently, only locations in Maryland are supported. If supporting other states
 becomes beneficial, they will be added.
 
-The cron job responsible for sending emails is currently performed by Supabase.
-However, the current tier being used only supports 2 cron jobs, with each being
-permitted 1 task daily. This means that alerts cannot be customized to be sent at
-any time, and instead must be sent all at once. cron-job.org or another service
-may be used in the future to allow further customization and flexibility in
-creating and sending alerts.
+Alerts are currently sent at 12:00 AM EST. Time customization may be added in the future.
